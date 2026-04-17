@@ -1,0 +1,116 @@
+
+/* ─── Герой-блок (заголовок сторінки) ─── */
+.contact-hero {
+    padding: 5rem 0 3rem;
+    text-align: center;
+}
+
+.contact-hero h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    margin-bottom: 1rem;
+}
+
+.contact-hero p {
+    color: var(--brand-muted);
+    font-size: 1.1rem;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* ─── Картки з інформацією та формою ─── */
+.contact-content {
+    padding-bottom: 6rem;
+}
+
+.info-card {
+    background: var(--brand-card);
+    border: 1px solid var(--brand-border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    height: 100%;
+}
+
+.info-icon {
+    width: 48px;
+    height: 48px;
+    background: rgba(34, 211, 238, 0.1);
+    color: var(--brand-accent2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+}
+
+.info-card h4 {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.info-card p {
+    color: var(--brand-muted);
+    margin-bottom: 0;
+}
+
+.info-card a {
+    color: var(--brand-accent2);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.info-card a:hover {
+    text-decoration: underline;
+}
+
+/* ─── Кастомний дизайн полів форми (щоб вони були темними) ─── */
+.form-control, .form-select {
+    background-color: #1a1e2b;
+    border: 1px solid var(--brand-border);
+    color: var(--brand-text);
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: #1a1e2b;
+    color: var(--brand-text);
+    border-color: var(--brand-accent);
+    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+    outline: none;
+}
+
+.form-control::placeholder {
+    color: #64748b;
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--brand-text);
+    margin-bottom: 0.5rem;
+}
+
+/* ─── Кнопка відправки ─── */
+.btn-submit {
+    background: var(--brand-accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-pill);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.8rem 2rem;
+    width: 100%;
+    transition: all 0.2s;
+    margin-top: 1rem;
+}
+
+.btn-submit:hover {
+    background: #7c3aed;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+}

@@ -1,0 +1,89 @@
+<style>
+    /* ─── Navbar ─── */
+.navbar {
+    background-color: rgba(11, 13, 20, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--brand-border);
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.navbar-brand {
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--brand-text) !important;
+}
+
+.navbar-brand span {
+    display: inline-block;
+    background: var(--brand-accent);
+    color: #fff;
+    padding: 0.05em 0.35em;
+    border-radius: 6px;
+    margin-left: 1px;
+}
+
+.btn-login {
+    color: var(--brand-muted);
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.btn-login:hover {
+    color: var(--brand-text);
+}
+
+.btn-signup {
+    background: var(--brand-accent);
+    color: #fff;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    font-family: 'Syne', sans-serif;
+    letter-spacing: -0.01em;
+    padding: 0.45rem 1.25rem;
+    border: none;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.btn-signup:hover {
+    background: #7c3aed;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+}
+</style>
+
+
+<nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">Flō<span>w</span></a>
+
+        <button class="navbar-toggler border-0" type="button"
+                data-bs-toggle="collapse" data-bs-target="#mainNav"
+                aria-controls="mainNav" aria-expanded="false" aria-label="Відкрити меню">
+            <i class="bi bi-list text-white fs-2"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav me-auto mb-3 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'home' %}"
+                       style="color:var(--brand-muted);font-size:0.9rem;">Головна</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about' %}" style="color:var(--brand-muted);font-size:0.9rem;">Про нас</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'contacts' %}" style="color:var(--brand-muted);font-size:0.9rem;">Контакти</a>
+                </li>
+            </ul>
+
+            <div class="d-flex align-items-center gap-2 ms-auto">
+                <a href="#" class="btn btn-login text-decoration-none">Увійти</a>
+                <a href="#" class="btn btn-signup">Реєстрація</a>
+            </div>
+        </div>
+    </div>
+</nav>

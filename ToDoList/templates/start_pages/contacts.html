@@ -1,0 +1,64 @@
+{% extends 'layout/start_pages_layout.html' %}
+
+
+{% load static %}
+
+{% block page_specific_css %}
+<link rel="stylesheet" href="{% static 'start_pages/css/start_pages_contacts.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<section class="contact-hero">
+    <div class="container">
+        <h1>Завжди на зв'язку</h1>
+        <p>Маєш ідею, знайшов баг або просто хочеш сказати привіт? Заповни форму нижче, і ми відповімо найближчим
+            часом.</p>
+    </div>
+</section>
+
+<section class="contact-content">
+    <div class="container">
+        <div class="row g-5">
+
+            <div class="col-lg-12">
+                <div class="info-card">
+                    <h4 class="mb-4">Напиши нам</h4>
+                    <form action="#" method="POST">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="name" class="form-label">Ім'я</label>
+                                <input type="text" class="form-control" id="name" placeholder="Твоє ім'я" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" placeholder="name@example.com"
+                                       required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="topic" class="form-label">Тема звернення</label>
+                            <input type="text" class="form-control" id="topic"
+                                   placeholder="Введіть тему вашого звернення" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="message" class="form-label">Повідомлення</label>
+                            <textarea class="form-control" id="message" rows="3" placeholder="Розкажи нам деталі..."
+                                      required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-submit">Відправити повідомлення</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+{% endblock %}
+

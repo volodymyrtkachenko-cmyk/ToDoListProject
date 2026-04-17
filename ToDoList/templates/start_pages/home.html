@@ -1,0 +1,251 @@
+{% extends 'layout/start_pages_layout.html' %}
+
+{% load static %}
+
+
+
+{% block content %}
+<section class="hero">
+    <div class="container">
+        <div class="row align-items-center g-5">
+
+            <div class="col-lg-6">
+                <div class="fade-up">
+          <span class="hero-eyebrow">
+            <i class="bi bi-stars"></i> Планування нового рівня
+          </span>
+                </div>
+
+                <h1 class="fade-up delay-1 mb-4">
+                    Звільни думки.<br><em>Керуй часом.</em>
+                </h1>
+
+                <p class="lead fade-up delay-2 mb-4">
+                    Flōw перетворює розкидані завдання та постійні дедлайни на стильну, візуальну дошку. Створено для
+                    студентів та всіх, хто мислить списками, але живе в потоці.
+                </p>
+
+                <div class="d-flex flex-wrap gap-3 mb-5 fade-up delay-3">
+                    <a href="#" class="btn btn-cta">Почати →</a>
+                    <a href="#how" class="btn btn-cta-ghost">Як це працює</a>
+                </div>
+            </div>
+
+            <div class="col-lg-6 fade-up delay-2">
+                <div class="mockup-wrap">
+
+                    <div class="mockup-badge mockup-badge-tl d-none d-md-flex">
+                        <span style="color:#10b981;font-size:1.1rem;">✓</span>
+                        <span>Завдання виконано!</span>
+                    </div>
+                    <div class="mockup-badge mockup-badge-br d-none d-md-flex">
+                        <i class="bi bi-lightning-charge-fill" style="color:#f59e0b;"></i>
+                        <span>3 дедлайни сьогодні</span>
+                    </div>
+
+                    <div class="mockup-card">
+                        <div class="mockup-topbar">
+                            <div class="mockup-dot" style="background:#ef4444;"></div>
+                            <div class="mockup-dot" style="background:#f59e0b;"></div>
+                            <div class="mockup-dot" style="background:#10b981;"></div>
+                            <span style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-left:auto;font-family:'Syne',sans-serif;">Flōw — Навчальний семестр</span>
+                        </div>
+                        <div class="mockup-body">
+                            <div class="row g-2">
+
+                                <div class="col-4">
+                                    <div class="kanban-col">
+                                        <div class="kanban-col-title">Зробити</div>
+                                        <div class="kanban-task">
+                                            <div class="kanban-task-tag tag-purple">Дизайн</div>
+                                            <br>
+                                            Презентація проєкту
+                                            <div class="kanban-task-due"><i class="bi bi-calendar3"></i> 18 Квіт</div>
+                                        </div>
+                                        <div class="kanban-task">
+                                            <div class="kanban-task-tag tag-amber">Реферат</div>
+                                            <br>
+                                            Зібрати джерела
+                                            <div class="kanban-task-due"><i class="bi bi-calendar3"></i> 22 Квіт</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-4">
+                                    <div class="kanban-col"
+                                         style="border:1.5px solid rgba(34, 211, 238, 0.4);background:rgba(34, 211, 238, 0.05);">
+                                        <div class="kanban-col-title" style="color:var(--brand-accent2);">В процесі
+                                        </div>
+                                        <div class="kanban-task">
+                                            <div class="kanban-task-tag tag-blue">Код</div>
+                                            <br>
+                                            Лабораторна з БД
+                                            <div class="kanban-task-due" style="color:var(--brand-accent2);"><i
+                                                    class="bi bi-fire"></i> Сьогодні
+                                            </div>
+                                        </div>
+                                        <div class="kanban-task">
+                                            <div class="kanban-task-tag tag-green">Текст</div>
+                                            <br>
+                                            Вступ до курсової
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-4">
+                                    <div class="kanban-col">
+                                        <div class="kanban-col-title" style="color:#10b981;">Готово</div>
+                                        <div class="kanban-task" style="opacity:0.5;text-decoration:line-through;">
+                                            Семінар з історії
+                                        </div>
+                                        <div class="kanban-task" style="opacity:0.5;text-decoration:line-through;">
+                                            Оплата гуртожитку
+                                        </div>
+                                        <div class="kanban-task" style="opacity:0.5;text-decoration:line-through;">
+                                            Тест з англійської
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="features" id="features">
+    <div class="container">
+
+        <div class="text-center mb-5 fade-up">
+            <p class="section-eyebrow">Що всередині</p>
+            <h2 class="section-title mb-3">Усе потрібне.<br>І нічого зайвого.</h2>
+            <p class="section-sub mx-auto">
+                Сфокусований набір інструментів, створений, щоб прибрати хаос та допомогти тобі рухатись вперед.
+            </p>
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-6 col-lg-4 fade-up delay-1">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="bi bi-kanban"></i></div>
+                    <h5>Візуальні Канбан-дошки</h5>
+                    <p>Перетягуй картки між колонками, які відображають твій реальний процес: «Зробити», «В процесі»,
+                        «Готово». Миттєва ясність.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 fade-up delay-2">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="bi bi-alarm"></i></div>
+                    <h5>Розумні дедлайни</h5>
+                    <p>Встановлюй дати здачі робіт і отримуй сповіщення до того, як ситуація стане критичною. Більше
+                        жодних пропущених дедлайнів.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 fade-up delay-3">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="bi bi-tags"></i></div>
+                    <h5>Теги та пріоритети</h5>
+                    <p>Позначай предмети або типи завдань власними кольоровими тегами. Одразу бач, що потребує твоєї
+                        уваги найперше.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 fade-up delay-1">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="bi bi-people"></i></div>
+                    <h5>Спільні проєкти</h5>
+                    <p>Робите щось у команді? Поширюй дошку для одногрупників, розподіляй завдання та коментуй прямо в
+                        картках.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 fade-up delay-2">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                    <h5>Твій прогрес</h5>
+                    <p>Чистий дашборд показує, скільки ти встиг зробити за тиждень. Бачити свій рух вперед — найкраща
+                        мотивація.</p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 fade-up delay-3">
+                <div class="feature-card">
+                    <div class="feature-icon"><i class="bi bi-phone"></i></div>
+                    <h5>Завжди під рукою</h5>
+                    <p>Ноутбук на парах чи телефон у метро — дошки ідеально виглядають на будь-якому екрані. Записуй
+                        ідеї миттєво.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="how" id="how">
+    <div class="container">
+
+        <div class="text-center mb-5 fade-up">
+            <p class="section-eyebrow">Швидкий старт</p>
+            <h2 class="section-title mb-3">Готовність за пару хвилин.</h2>
+            <p class="section-sub mx-auto">
+                Ніяких нудних інструкцій. Просто реєструйся і починай наводити порядок.
+            </p>
+        </div>
+
+        <div class="row g-4 g-md-0 justify-content-center text-center">
+
+            <div class="col-md-4 step-wrap fade-up delay-1">
+                <div class="step-connector d-none d-md-block"></div>
+                <div class="step-number">01</div>
+                <h5 class="fw-bold mb-2">Створи акаунт</h5>
+                <p class="px-md-3">Реєстрація за 10 секунд без жодних карток. Тільки email — і ти вже всередині.</p>
+            </div>
+
+            <div class="col-md-4 step-wrap fade-up delay-2">
+                <div class="step-connector d-none d-md-block"></div>
+                <div class="step-number">02</div>
+                <h5 class="fw-bold mb-2">Створи дошку</h5>
+                <p class="px-md-3">Додай дошку для семестру, особистих справ чи підробітку. Називай колонки як
+                    завгодно.</p>
+            </div>
+
+            <div class="col-md-4 step-wrap fade-up delay-3">
+                <div class="step-number">03</div>
+                <h5 class="fw-bold mb-2">Додавай та дій</h5>
+                <p class="px-md-3">Вивантаж усе з голови у картки. Став дедлайни і спостерігай, як хаос перетворюється
+                    на план.</p>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<section class="bottom-cta">
+    <div class="container text-center position-relative" style="z-index:1;">
+        <div class="fade-up">
+            <p class="section-eyebrow" style="color:var(--brand-accent2);">Безкоштовно для старту</p>
+            <h2 class="mb-3">Час навести лад у справах?</h2>
+            <p class="mb-5 mx-auto" style="max-width:480px;">
+                Приєднуйся до тисяч користувачів, які перестали тримати все в голові і почали легко виконувати свої
+                завдання.
+            </p>
+            <a href="#" class="btn btn-cta-white btn-lg">
+                Почати
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'start_pages/js/start_pages_home.js' %}"></script>
+{% endblock %}

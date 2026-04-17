@@ -1,0 +1,35 @@
+
+<style>
+    footer {
+    border-top: 1px solid var(--brand-border);
+    padding: 1.75rem 0;
+    background: #08090d;
+}
+
+footer .nav-link {
+    font-size: 0.85rem;
+    color: var(--brand-muted);
+    padding: 0 0.75rem;
+    transition: color 0.2s;
+}
+
+footer .nav-link:hover {
+    color: var(--brand-text);
+}
+</style>
+
+<footer>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-12 col-md-auto mb-2 mb-md-0">
+                <span class="text-muted" style="font-size:0.85rem;">© 2026 Flōw. Всі права захищено.</span>
+            </div>
+            <div class="col-12 col-md ms-md-auto">
+                <ul class="nav justify-content-md-end">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">Про нас</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'contacts' %}">Контакти</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</footer>
