@@ -1,0 +1,47 @@
+<!-- ══ NAVBAR ══ -->
+<header class="tb-nav">
+
+    <!-- desktop sidebar toggle -->
+    <button class="tb-sb-toggle" id="sbToggleBtn" aria-label="Згорнути сайдбар">
+        <!-- collapse icon (панель ліворуч → приховати) -->
+        <svg class="icon-collapse" viewBox="0 0 16 16">
+            <rect x="2" y="2" width="12" height="12" rx="1.5"/>
+            <line x1="6" y1="2" x2="6" y2="14"/>
+            <polyline points="3.5,6 1.5,8 3.5,10"/>
+        </svg>
+        <!-- expand icon -->
+        <svg class="icon-expand" viewBox="0 0 16 16">
+            <rect x="2" y="2" width="12" height="12" rx="1.5"/>
+            <line x1="6" y1="2" x2="6" y2="14"/>
+            <polyline points="8.5,6 10.5,8 8.5,10"/>
+        </svg>
+    </button>
+
+    <!-- mobile burger -->
+    <button class="tb-burger" id="burgerBtn" aria-label="Меню">
+        <svg viewBox="0 0 16 16">
+            <line x1="2" y1="4" x2="14" y2="4"/>
+            <line x1="2" y1="8" x2="14" y2="8"/>
+            <line x1="2" y1="12" x2="14" y2="12"/>
+        </svg>
+    </button>
+
+    <div class="tb-logo">
+        <span class="tb-logo__text">Flō</span>
+        <span class="tb-logo__badge">w</span>
+    </div>
+
+    <div class="tb-stats ms-auto">
+        <div class="tb-stat"><span class="tb-stat__n">0</span><span class="tb-stat__l">всього</span></div>
+        <div class="tb-sep tb-stat-hide-mobile"></div>
+        <div class="tb-stat tb-stat-hide-mobile"><span class="tb-stat__n">0</span><span
+                class="tb-stat__l">виконано</span></div>
+        <div class="tb-sep tb-stat-hide-mobile"></div>
+        <div class="tb-stat tb-stat-hide-mobile"><span class="tb-stat__n">0</span><span
+                class="tb-stat__l">прострочено</span></div>
+    </div>
+
+    <button class="btn-create">
+        <span class="plus">+</span><span class="lbl">Створити</span>
+    </button>
+</header>

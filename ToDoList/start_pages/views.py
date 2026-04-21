@@ -1,13 +1,32 @@
-from django.shortcuts import render
 
-# Create your views here.
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail
+
 def home(request):
-    return render(request, 'start_pages/home.html')
+    return render(request, 'start_pages/home.html', {'title': "Головна"})
 
 
 def contacts(request):
-    return render(request, 'start_pages/contacts.html')
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        topic = request.POST.get('topic')
+        message = request.POST.get('message')
+        full_message = f'Імʼя: {name}\nПошта: {email}\nТема: {topic}\nПовідомлення: {message}'
+
+        send_mail(
+            subject=f'Нове запитання від {name}',
+            message= full_message,
+            from_email='smtp.gmail.com',
+            recipient_list=['vova38338@gmail.com']
+        )
+        return redirect('home')
+    return render(request, 'start_pages/contacts.html', {'title': "Контакти"})
 
 
 def about(request):
-    return render(request, 'start_pages/about.html')
+    return render(request, 'start_pages/about.html', {'title': "Про нас"})
+
+
+

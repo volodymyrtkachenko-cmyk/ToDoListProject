@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'start_pages/css/start_pages_login_register.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block layout %}
+<div class="min-h-screen flex items-center justify-center p-4">
+    <div class="fade-in w-full max-w-xl bg-[#0C0C0E] border border-[#1F1F23] shadow-[0_0_80px_-20px_rgba(255,255,255,0.05)] overflow-hidden rounded-sm">
+        <div class="p-8 md:p-14 flex flex-col justify-center">
+            <div class="mb-12">
+                <h1 class="serif text-3xl tracking-tight text-stone-200 mb-1">Flow.</h1>
+                <p class="text-stone-500 text-xs uppercase tracking-[0.2em] font-semibold">Minimalist productivity</p>
+            </div>
+
+
+            {% if mode == 'register' %}
+            <form action="{% url 'register' %}" method="POST" id="auth-form" class="space-y-5">
+                <div id="auth-header">
+                    <h2 id="form-title" class="text-xl font-light mb-1 text-stone-100">Готові починати?</h2>
+                    <p id="form-subtitle" class="text-stone-500 text-xs mb-8">Введіть дані для реєстрації</p>
+                </div>
+                {% csrf_token %}
+                {% if error %}
+                <div style="color: red; margin-bottom: 15px; font-weight: bold;">
+                    {{ error }}
+                </div>
+                {% endif %}
+                <!-- Username Field (Приховано за замовчуванням) -->
+                <div id="username-group" class="space-y-2">
+                    <label class="block text-[10px] uppercase tracking-wider text-stone-500 font-bold">Ім'я
+                        користувача</label>
+                    <input
+                            type="text"
+                            name="username"
+                            placeholder="імʼя"
+                            class="w-full px-4 py-3 bg-[#121214] border border-[#27272A] rounded-md text-stone-100 text-sm focus:border-stone-400 outline-none transition-colors"
+                    >
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-[10px] uppercase tracking-wider text-stone-500 font-bold">Пошта</label>
+                    <input
+                            type="email"
+                            name="email"
+                            placeholder="name@example.co"
+                            required
+                            class="w-full px-4 py-3 bg-[#121214] border border-[#27272A] rounded-md text-stone-100 text-sm focus:border-stone-400 outline-none transition-colors"
+                    >
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-[10px] uppercase tracking-wider text-stone-500 font-bold">Пароль</label>
+                    <input
+                            type="password"
+                            name="password"
+                            placeholder="••••••••"
+                            required
+                            class="w-full px-4 py-3 bg-[#121214] border border-[#27272A] rounded-md text-stone-100 text-sm focus:border-stone-400 outline-none transition-colors"
+                    >
+                </div>
+
+                <button
+                        type="submit"
+                        id="submit-btn"
+                        class="w-full py-3 bg-stone-200 text-black font-semibold rounded-md text-sm hover:bg-white transition-colors mt-4 cursor-pointer"
+                >
+                    Зареєструватися
+                </button>
+            </form>
+            <div class="mt-8 text-center pt-6 border-t border-[#1F1F23]">
+                <p class="text-xs text-stone-500">
+                    <span id="toggle-text">Вже маєте аккаунт?</span>
+                    <!-- Додано стилі для посилання: світліший текст, підкреслення та білий колір при наведенні, відступ зліва -->
+                    <a href="{% url 'login' %}"
+                       class="text-stone-200 hover:text-white hover:underline transition-colors font-medium ml-1">Увійти</a>
+                </p>
+            </div>
+
+            {% elif mode == 'login' %}
+            <form action="{% url 'login' %}" method="POST" id="auth-form" class="space-y-5">
+                <div id="auth-header">
+                    <h2 id="form-title" class="text-xl font-light mb-1 text-stone-100">З поверненням?</h2>
+                    <p id="form-subtitle" class="text-stone-500 text-xs mb-8">Введіть дані для входу</p>
+                </div>
+
+                {% csrf_token %}
+
+                {% if error %}
+                <!-- Замінено інлайн-стилі на класи для збереження єдиного стилю коду -->
+                <div class="text-red-500 text-sm font-semibold mb-4">
+                    {{ error }}
+                </div>
+                {% endif %}
+
+                <div class="space-y-2">
+                    <label class="block text-[10px] uppercase tracking-wider text-stone-500 font-bold">Пошта</label>
+                    <input
+                            type="email"
+                            name="email"
+                            placeholder="name@example.co"
+                            required
+                            class="w-full px-4 py-3 bg-[#121214] border border-[#27272A] rounded-md text-stone-100 text-sm focus:border-stone-400 outline-none transition-colors"
+                    >
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-[10px] uppercase tracking-wider text-stone-500 font-bold">Пароль</label>
+                    <input
+                            type="password"
+                            name="password"
+                            placeholder="••••••••"
+                            required
+                            class="w-full px-4 py-3 bg-[#121214] border border-[#27272A] rounded-md text-stone-100 text-sm focus:border-stone-400 outline-none transition-colors"
+                    >
+                </div>
+
+                <button
+                        type="submit"
+                        id="submit-btn"
+                        class="w-full py-3 bg-stone-200 text-black font-semibold rounded-md text-sm hover:bg-white transition-colors mt-4 cursor-pointer"
+                >
+                    Увійти
+                </button>
+
+                <div class="mt-8 text-center pt-6 border-t border-[#1F1F23]">
+                    <p class="text-xs text-stone-500">
+                        <span id="toggle-text">Не маєте аккаунта?</span>
+                        <!-- Додано аналогічні стилі для посилання реєстрації -->
+                        <a href="{% url 'register' %}"
+                           class="text-stone-200 hover:text-white hover:underline transition-colors font-medium ml-1">Зареєструватися</a>
+                    </p>
+                </div>
+            </form>
+            {% endif %}
+                
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let isLogin = "{{ mode|default:'login' }}" === 'login';
+
+    if (isLogin) {
+        authForm.action = "{% url 'login' %}";
+    } else {
+        authForm.action = "{% url 'register' %}";
+    }
+</script>
+<script src="{% static 'start_pages/js/start_pages_login_register.js' %}"></script>
+{% endblock %}

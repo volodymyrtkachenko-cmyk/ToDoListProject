@@ -1,116 +1,142 @@
+/* ─── Анімація появи ─── */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
-/* ─── Герой-блок (заголовок сторінки) ─── */
+/* ─── Обгортка для розтягування на весь екран ─── */
+.contact-fullscreen-wrapper {
+    /* Віднімаємо приблизну висоту хедера і футера (зміни 160px за потреби) */
+    min-height: calc(100vh - 160px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 2rem;
+}
+
+.contact-fullscreen-wrapper > .w-100 {
+    width: 100%;
+    max-width: 900px; /* Оптимальна максимальна ширина контенту */
+}
+
+/* ─── Герой (Секція з заголовком) ─── */
 .contact-hero {
-    padding: 5rem 0 3rem;
+    padding-top: 1rem !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
     text-align: center;
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.contact-hero .container {
+    padding-bottom: 0 !important;
 }
 
 .contact-hero h1 {
-    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
     font-weight: 800;
     letter-spacing: -0.04em;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem !important;
 }
 
 .contact-hero p {
-    color: var(--brand-muted);
-    font-size: 1.1rem;
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-/* ─── Картки з інформацією та формою ─── */
-.contact-content {
-    padding-bottom: 6rem;
-}
-
-.info-card {
-    background: var(--brand-card);
-    border: 1px solid var(--brand-border);
-    border-radius: var(--radius-lg);
-    padding: 2rem;
-    height: 100%;
-}
-
-.info-icon {
-    width: 48px;
-    height: 48px;
-    background: rgba(34, 211, 238, 0.1);
-    color: var(--brand-accent2);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.4rem;
+    color: #cbd5e1;
     margin-bottom: 1.5rem;
+}
+
+/* ─── Контент (Секція з формою) ─── */
+.contact-content {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+    opacity: 0;
+    animation: fadeInUp 0.5s ease-out 0.2s forwards; /* Затримка 0.2с */
+}
+
+.contact-content .row.g-5 {
+    --bs-gutter-y: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* ─── Картка форми ─── */
+.info-card {
+    background: var(--brand-card, #1e2235); /* Додав фолбек колір на випадок відсутності змінної */
+    border: 1px solid var(--brand-border, #2a2f4c);
+    border-radius: var(--radius-lg, 16px);
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .info-card h4 {
     font-weight: 700;
-    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem !important;
+    color: #ffffff;
 }
 
-.info-card p {
-    color: var(--brand-muted);
-    margin-bottom: 0;
-}
-
-.info-card a {
-    color: var(--brand-accent2);
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.info-card a:hover {
-    text-decoration: underline;
-}
-
-/* ─── Кастомний дизайн полів форми (щоб вони були темними) ─── */
-.form-control, .form-select {
-    background-color: #1a1e2b;
-    border: 1px solid var(--brand-border);
-    color: var(--brand-text);
-    padding: 0.8rem 1rem;
-    border-radius: 12px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.form-control:focus, .form-select:focus {
-    background-color: #1a1e2b;
-    color: var(--brand-text);
-    border-color: var(--brand-accent);
-    box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
-    outline: none;
+/* ─── Поля форми (Оновлено для контрасту) ─── */
+.form-control,
+.form-select {
+    background-color: rgba(0, 0, 0, 0.25) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    color: #f8fafc !important;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    transition: all 0.2s ease-in-out;
 }
 
 .form-control::placeholder {
-    color: #64748b;
+    color: #94a3b8 !important;
+    opacity: 1;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: rgba(0, 0, 0, 0.4) !important;
+    color: #ffffff !important;
+    border-color: var(--brand-accent, #8b5cf6) !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2) !important;
+    outline: none;
 }
 
 .form-label {
     font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--brand-text);
-    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    color: #cbd5e1;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.02em;
 }
 
-/* ─── Кнопка відправки ─── */
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* ─── Кнопка ─── */
 .btn-submit {
-    background: var(--brand-accent);
+    background: var(--brand-accent, #8b5cf6);
     color: #fff;
     border: none;
-    border-radius: var(--radius-pill);
+    border-radius: var(--radius-pill, 50px);
     font-family: 'Syne', sans-serif;
     font-weight: 700;
     font-size: 1rem;
     padding: 0.8rem 2rem;
     width: 100%;
-    transition: all 0.2s;
     margin-top: 1rem;
+    transition: all 0.2s;
 }
 
 .btn-submit:hover {
     background: #7c3aed;
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+    color: #fff;
 }

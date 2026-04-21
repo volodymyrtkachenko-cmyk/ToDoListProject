@@ -1,0 +1,135 @@
+<!-- overlay -->
+<div class="tb-overlay" id="overlay"></div>
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="tb-sidebar" id="sidebar">
+
+    <!-- 1. Scrollable nav + categories -->
+    <div class="sb-scroll">
+
+        <span class="sb-lbl mb-2 mt-1 d-block">Навігація</span>
+        <a class="sb-link active mb-1">
+            <svg viewBox="0 0 16 16">
+                <path d="M2 6.5L8 2l6 4.5V14a1 1 0 01-1 1H3a1 1 0 01-1-1V6.5z"/>
+            </svg>
+            <span>Головна</span>
+        </a>
+        <a class="sb-link">
+            <svg viewBox="0 0 16 16">
+                <rect x="2" y="3" width="12" height="11" rx="1.5"/>
+                <path d="M5 3V1.5M11 3V1.5M2 7h12"/>
+            </svg>
+            <span>Архів</span>
+        </a>
+
+        <div class="sb-sec-row mt-3 mb-2">
+            <span class="sb-lbl">Категорії</span>
+            <button class="ib">
+                <svg viewBox="0 0 12 12">
+                    <line x1="6" y1="1" x2="6" y2="11"/>
+                    <line x1="1" y1="6" x2="11" y2="6"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="sb-cat">
+            <span class="dot" style="background:#6c63ff"></span>
+            <span class="sb-cat__n">Робота</span>
+            <span class="badge-cnt">0</span>
+        </div>
+
+        <div class="sb-cat">
+            <span class="dot" style="background:#34d399"></span>
+            <span class="sb-cat__n">Особисте</span>
+            <span class="badge-cnt">0</span>
+        </div>
+
+        <div class="sb-cat">
+            <span class="dot" style="background:#f59e0b"></span>
+            <span class="sb-cat__n">Навчання</span>
+            <span class="badge-cnt">0</span>
+        </div>
+
+    </div><!-- /scroll -->
+
+    <!-- 2. Calendar — PINNED above profile -->
+    <div class="sb-cal-pin" id="sbCalPin">
+        <div class="tb-cal">
+            <div class="cal-hd">
+                <span class="cal-title" id="calTitle">Березень 2025</span>
+                <div class="d-flex gap-1">
+                    <button class="cal-nbtn" id="calPrev">
+                        <svg viewBox="0 0 10 10">
+                            <polyline points="7,1 3,5 7,9"/>
+                        </svg>
+                    </button>
+                    <button class="cal-nbtn" id="calNext">
+                        <svg viewBox="0 0 10 10">
+                            <polyline points="3,1 7,5 3,9"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="cal-grid" id="calGrid"></div>
+        </div>
+    </div>
+
+    <!-- 3. Footer — profile + settings icon -->
+    <div class="sb-foot">
+
+        <!-- dropdown (opens upward) -->
+        <div class="set-dd" id="setMenu">
+            <a class="dd-item">
+                <svg viewBox="0 0 16 16">
+                    <circle cx="8" cy="5.5" r="2.5"/>
+                    <path d="M2.5 14c0-3 2.5-5.5 5.5-5.5s5.5 2.5 5.5 5.5"/>
+                </svg>
+                Профіль
+            </a>
+            <a class="dd-item">
+                <svg viewBox="0 0 16 16">
+                    <circle cx="8" cy="8" r="2.5"/>
+                    <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M11.5 4.5l1.1-1.1M3.4 12.6l1.1-1.1"/>
+                </svg>
+                Налаштування
+            </a>
+            <a class="dd-item" href="{% url 'contacts' %}" >
+                <svg viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
+                </svg>
+                Контакти
+            </a>
+            <a class="dd-item" href="{% url 'about' %}">
+                <svg viewBox="0 0 16 16">
+                    <circle cx="8" cy="8" r="6"/>
+                    <line x1="8" y1="7" x2="8" y2="11"/>
+                    <circle cx="8" cy="5" r=".5" fill="currentColor" stroke="none"/>
+                </svg>
+                Про застосунок
+            </a>
+            <div class="dd-div"></div>
+            <a href="{% url 'logout' %}" class="dd-item danger" style="text-decoration: none;">
+                <svg viewBox="0 0 16 16">
+                    <path d="M10 3h3v10h-3M6 11l-4-3 4-3M2 8h8"/>
+                </svg>
+                Вийти
+            </a>
+        </div>
+
+        <div class="user-row">
+            <div class="user-ava">В</div>
+            <div class="user-info">
+                <div class="user-name">{{ user.username|truncatechars:15 }}</div>
+                <div class="user-sub">Особистий акаунт</div>
+            </div>
+            <!-- settings icon button — right of profile -->
+            <button class="set-btn" id="setBtn" aria-label="Налаштування">
+                <svg class="ico" viewBox="0 0 16 16">
+                    <circle cx="8" cy="8" r="2.5"/>
+                    <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M11.5 4.5l1.1-1.1M3.4 12.6l1.1-1.1"/>
+                </svg>
+            </button>
+        </div>
+
+    </div>
+</aside>

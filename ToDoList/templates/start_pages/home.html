@@ -26,7 +26,7 @@
                 </p>
 
                 <div class="d-flex flex-wrap gap-3 mb-5 fade-up delay-3">
-                    <a href="#" class="btn btn-cta">Почати →</a>
+                    <a href="{% url 'register' %}" class="btn btn-cta">Почати</a>
                     <a href="#how" class="btn btn-cta-ghost">Як це працює</a>
                 </div>
             </div>
@@ -206,7 +206,7 @@
                 <div class="step-connector d-none d-md-block"></div>
                 <div class="step-number">01</div>
                 <h5 class="fw-bold mb-2">Створи акаунт</h5>
-                <p class="px-md-3">Реєстрація за 10 секунд без жодних карток. Тільки email — і ти вже всередині.</p>
+                <p class="px-md-3">Реєстрація за 10 секунд без жодних карток.</p>
             </div>
 
             <div class="col-md-4 step-wrap fade-up delay-2">
@@ -232,13 +232,12 @@
 <section class="bottom-cta">
     <div class="container text-center position-relative" style="z-index:1;">
         <div class="fade-up">
-            <p class="section-eyebrow" style="color:var(--brand-accent2);">Безкоштовно для старту</p>
             <h2 class="mb-3">Час навести лад у справах?</h2>
             <p class="mb-5 mx-auto" style="max-width:480px;">
                 Приєднуйся до тисяч користувачів, які перестали тримати все в голові і почали легко виконувати свої
                 завдання.
             </p>
-            <a href="#" class="btn btn-cta-white btn-lg">
+            <a href="{% url 'register' %}" class="btn btn-cta-white btn-lg">
                 Почати
             </a>
         </div>
