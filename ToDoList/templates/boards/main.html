@@ -1,6 +1,35 @@
-{% extends 'layout/boards_layout.html' %}
+{% extends 'layout/board_layout.html' %}
+{% load static %}
+
+{% block page_css %}
+<link href="{% static 'boards/css/pages/board.css' %}" rel="stylesheet">
+{% endblock %}
 
 {% block content %}
+<div class="board-wrap">
+    <div class="board-header">
+        <div class="week-nav">
+            <button class="week-btn" id="weekPrev">
+                <svg viewBox="0 0 16 16">
+                    <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <span class="week-label" id="weekLabel"></span>
+            <button class="week-btn" id="weekNext">
+                <svg viewBox="0 0 16 16">
+                    <path d="M6 12l4-4-4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+        <button class="week-today-btn" id="weekToday">Сьогодні</button>
+    </div>
 
+    <div class="board-grid" id="boardGrid"></div>
+</div>
+{% endblock %}
 
+{% block page_js %}
+<script src="{% static 'boards/js/pages/board.js' %}"></script>
 {% endblock %}

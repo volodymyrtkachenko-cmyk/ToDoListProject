@@ -1,0 +1,81 @@
+<div class="modal fade" id="createModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 440px;">
+        <div class="modal-content task-modal">
+
+            <!-- Заголовок -->
+            <div class="task-modal-header">
+                <h5 class="task-modal-title">Нове завдання</h5>
+                <button type="button" class="task-modal-close" data-bs-dismiss="modal">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"
+                         viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Форма -->
+            <form method="POST" action="#">
+                {% csrf_token %}
+                <div class="task-modal-body">
+
+                    <!-- Назва -->
+                    <div class="task-field">
+                        <label class="task-label">Назва</label>
+                        <input type="text" name="title" class="task-input"
+                               placeholder="Назва завдання..." required autocomplete="off"/>
+                    </div>
+
+                    <!-- Опис -->
+                    <div class="task-field">
+                        <label class="task-label">Опис</label>
+                        <textarea name="description" class="task-input task-textarea"
+                                  placeholder="Додатковий опис..." rows="3"></textarea>
+                    </div>
+
+                    <!-- Категорія -->
+                    <div class="task-field">
+                        <label class="task-label">Категорія</label>
+                        <div class="task-categories">
+                            <label class="task-cat-option">
+                                <input type="radio" name="category" value="1" hidden/>
+                                <span class="task-cat-dot" style="background: #8b5cf6;"></span>
+                                Робота
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Пріоритет -->
+                    <div class="task-field">
+                        <label class="task-label">Пріоритет</label>
+                        <div class="task-priority">
+                            <label class="task-priority-option high">
+                                <input type="radio" name="priority" value="high" hidden/> Високий
+                            </label>
+                            <label class="task-priority-option medium">
+                                <input type="radio" name="priority" value="medium" hidden checked/> Середній
+                            </label>
+                            <label class="task-priority-option low">
+                                <input type="radio" name="priority" value="low" hidden/> Низький
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Дедлайн -->
+                    <div class="task-field">
+                        <label class="task-label">Дедлайн</label>
+                        <input type="date" name="deadline" class="task-input task-input-date"/>
+                    </div>
+
+                </div>
+
+                <!-- Кнопки -->
+                <div class="task-modal-footer">
+                    <button type="button" class="task-btn-cancel" data-bs-dismiss="modal">Скасувати</button>
+                    <button type="submit" class="task-btn-create">Створити</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

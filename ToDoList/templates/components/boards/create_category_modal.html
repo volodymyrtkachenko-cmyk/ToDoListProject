@@ -1,0 +1,81 @@
+<div class="modal fade" id="createCategoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
+        <div class="modal-content task-modal">
+
+            <!-- Заголовок -->
+            <div class="task-modal-header">
+                <h5 class="task-modal-title">Нова категорія</h5>
+                <button type="button" class="task-modal-close" data-bs-dismiss="modal">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Форма -->
+            <form method="POST" action="{% url 'create_category' %}" id="categoryForm">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="create_category">
+                <input type="hidden" name="color" id="selectedColor" value="{{ available_colors.0 }}">
+
+                <div class="task-modal-body">
+
+                    <!-- Назва -->
+                    <div class="task-field">
+                        <label class="task-label">Назва</label>
+                        <input type="text" name="name" id="categoryName" class="task-input"
+                               placeholder="Наприклад: Подорожі..." required autocomplete="off"
+                               oninput="updateCategoryPreview()"/>
+                    </div>
+
+                    <div class="color-picker">
+                        {% for color in available_colors %}
+                        <button
+                                type="button"
+                                class="color-dot {% if forloop.first %}active{% endif %}"
+                                data-color="{{ color }}"
+                                style="background:{{ color }};"
+                                onclick="selectColor(this)">
+                        </button>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Попередній перегляд -->
+                    <div class="task-field">
+                        <label class="task-label">Попередній перегляд</label>
+                        <div class="category-preview">
+                            <span class="category-preview-dot" id="previewDot" style="background:#a78bfa;"></span>
+                            <span class="category-preview-name" id="previewName">Назва категорії</span>
+                            <span class="category-preview-count">0</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Кнопки -->
+                <div class="task-modal-footer">
+                    <button type="button" class="task-btn-cancel" data-bs-dismiss="modal">Скасувати</button>
+                    <button type="submit" class="task-btn-create">Додати</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function selectColor(el) {
+        document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+        el.classList.add('active');
+        const color = el.dataset.color;
+        document.getElementById('selectedColor').value = color;
+        document.getElementById('previewDot').style.background = color;
+    }
+
+    function updateCategoryPreview() {
+        const name = document.getElementById('categoryName').value.trim();
+        document.getElementById('previewName').textContent = name || 'Назва категорії';
+    }
+</script>
+

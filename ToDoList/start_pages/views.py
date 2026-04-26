@@ -1,9 +1,12 @@
-
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.core.mail import send_mail
+from django.contrib import messages
+
 
 def home(request):
+    if request.user.is_authenticated:
+        return redirect('main')
     return render(request, 'start_pages/home.html', {'title': "Головна"})
 
 
@@ -17,16 +20,18 @@ def contacts(request):
 
         send_mail(
             subject=f'Нове запитання від {name}',
-            message= full_message,
+            message=full_message,
             from_email='smtp.gmail.com',
             recipient_list=['vova38338@gmail.com']
         )
-        return redirect('home')
+        if request.user.is_authenticated:
+            messages.success(request, 'Повідомлення відправленно успішно!')
+            return redirect('contacts_boards')
+        else:
+            messages.success(request, 'Повідомлення відправленно успішно!')
+            return redirect('home')
     return render(request, 'start_pages/contacts.html', {'title': "Контакти"})
 
 
 def about(request):
     return render(request, 'start_pages/about.html', {'title': "Про нас"})
-
-
-

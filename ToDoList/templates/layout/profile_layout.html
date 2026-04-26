@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link href="{% static 'boards/css/layout/profile_layout.css' %}" rel="stylesheet">
+{% block page_css %}{% endblock %}
+{% endblock %}
+
+{% block layout %}
+{% include 'components/boards/sidebar_profile.html' %}
+
+<div class="boards-page-content">
+    {% block content %}{% endblock %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'boards/js/layout/profile_layout.js' %}"></script>
+{% block page_js %}{% endblock %}
+{% endblock %}

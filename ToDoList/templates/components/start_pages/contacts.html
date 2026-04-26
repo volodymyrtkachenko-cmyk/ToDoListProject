@@ -1,0 +1,112 @@
+<style>
+    .contact-messages {
+        margin-bottom: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .contact-alert {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .contact-alert-success {
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        color: #4ade80;
+    }
+
+    .contact-alert-error {
+        background: rgba(239, 68, 68, 0.12);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #f87171;
+    }
+
+    .contact-alert-warning {
+        background: rgba(234, 179, 8, 0.12);
+        border: 1px solid rgba(234, 179, 8, 0.3);
+        color: #facc15;
+    }
+</style>
+
+<div class="contact-fullscreen-wrapper">
+    <div class="w-100">
+
+        <section class="contact-hero">
+            <div class="container">
+                <h1>Завжди на зв'язку</h1>
+                <p>Маєш ідею, знайшов баг або просто хочеш сказати привіт? Заповни форму нижче, і ми відповімо
+                    найближчим часом.</p>
+            </div>
+        </section>
+        {% if messages %}
+        <div class="contact-messages">
+            {% for message in messages %}
+            <div class="contact-alert contact-alert-{{ message.tags }}">
+                {% if message.tags == 'success' %}
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+                {% else %}
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                {% endif %}
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <section class="contact-content">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-lg-10">
+                        <div class="info-card">
+                            <h4 class="mb-4">Напиши нам</h4>
+
+                            <form action="{% url 'contacts' %}" method="POST">
+
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6">
+                                        <label for="name" class="form-label">Ім'я</label>
+                                        <input type="text" name="name" class="form-control" id="name"
+                                               placeholder="Твоє ім'я" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" name="email" class="form-control" id="email"
+                                               placeholder="name@example.com" required>
+                                    </div>
+                                </div>
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="topic" class="form-label">Тема звернення</label>
+                                    <input type="text" name="topic" class="form-control" id="topic"
+                                           placeholder="Введіть тему вашого звернення" required>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="message" class="form-label">Повідомлення</label>
+                                    <textarea name="message" class="form-control" id="message" rows="4"
+                                              placeholder="Розкажи нам деталі..." required></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-submit">Відправити повідомлення</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>

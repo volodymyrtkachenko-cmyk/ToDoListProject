@@ -1,0 +1,138 @@
+{% extends 'layout/profile_layout.html' %}
+{% load static %}
+
+{% block page_css %}
+<link href="{% static 'boards/css/pages/profile.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<main class="main">
+    <div class="page-title">Профіль</div>
+    {% if messages %}
+    <div class="contact-messages mb-3">
+        {% for message in messages %}
+        <div class="contact-alert contact-alert-{{ message.tags }}">
+            {% if message.tags == 'success' %}
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <polyline points="20 6 9 17 4 12"/>
+            </svg>
+            {% else %}
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            {% endif %}
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+
+    <div class="profile-card">
+        <div class="section-title">Особиста інформація</div>
+
+        <div class="avatar-block">
+
+            <form method="POST" enctype="multipart/form-data" id="avatarForm">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="update_avatar">
+                <div class="avatar-wrap" onclick="document.getElementById('avatarInput').click()">
+                    {% if user.profile.avatar %}
+                    <img src="{{ user.profile.avatar.url }}" class="avatar-circle"/>
+                    {% else %}
+                    <div class="avatar-circle" id="avatarCircle">{{ user.username|first|upper }}</div>
+                    {% endif %}
+                    <div class="avatar-overlay">...</div>
+                    <input type="file" id="avatarInput" name="avatar" accept="image/*"
+                           style="display:none" onchange="previewAvatar(this)"/>
+                </div>
+            </form>
+
+            <div class="avatar-meta">
+                <div class="avatar-name" id="displayName">{{ user.username }}</div>
+                <button type="button" class="btn-upload"
+                        onclick="document.getElementById('avatarInput').click()">Змінити фото
+                </button>
+            </div>
+
+        </div>
+
+        <form class="field-grid" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update_info">
+            <div class="field-group">
+                <label class="field-label">Ім'я</label>
+                <input id="firstName" name="first_name" class="field-input" type="text" value="{{ user.first_name }}"
+                       placeholder="Ім'я"/>
+            </div>
+            <div class="field-group">
+                <label class="field-label">Прізвище</label>
+                <input id="lastName" name="last_name" class="field-input" type="text" value="{{ user.last_name }}"
+                       placeholder="Прізвище"/>
+            </div>
+            <div class="field-group full">
+                <label class="field-label">Електронна пошта</label>
+                <input class="field-input" name="email" value="{{ user.email }}" placeholder="email@example.com"
+                       disabled/>
+            </div>
+            <div class="field-group full">
+                <label class="field-label">Дата реєстрації</label>
+                <input class="field-input" type="text" value="{{ user.date_joined }}" disabled/>
+            </div>
+            <div class="action-row">
+                <button type="reset" class="btn-ghost">Скинути</button>
+                <button type="submit" class="btn-save">Зберегти</button>
+            </div>
+        </form>
+
+    </div>
+
+    <form class="profile-card" method="POST">
+        <div class="section-title">Зміна пароля</div>
+        <input type="hidden" name="action" value="change_password">
+        {% csrf_token %}
+        <div class="field-grid">
+            <div class="field-group full">
+                <label class="field-label">Поточний пароль</label>
+                <input class="field-input" name="user_password" type="password" placeholder="••••••••"/>
+            </div>
+            <div class="field-group">
+                <label class="field-label">Новий пароль</label>
+                <input class="field-input" name="new_password1" type="password" id="newPass" placeholder="••••••••"
+                       oninput="checkStrength(this.value); checkMatch()"/>
+                <div class="strength-bar">
+                    <div class="strength-seg" id="s1"></div>
+                    <div class="strength-seg" id="s2"></div>
+                    <div class="strength-seg" id="s3"></div>
+                    <div class="strength-seg" id="s4"></div>
+                </div>
+                <div class="strength-label" id="strengthLabel"></div>
+            </div>
+            <div class="field-group">
+                <label class="field-label">Підтвердити пароль</label>
+                <input class="field-input" name="new_password2" type="password" id="confirmPass" placeholder="••••••••"
+                       oninput="checkMatch()"/>
+                <div class="strength-label" id="matchLabel"></div>
+            </div>
+        </div>
+
+        <div class="action-row">
+            <button type="reset" class="btn-ghost" onclick="setTimeout(() => { checkStrength(''); checkMatch(); }, 50)">
+                Скинути
+            </button>
+            <button class="btn-save" type="submit">Оновити пароль</button>
+        </div>
+    </form>
+</main>
+
+<div class="toast-wrap">
+    <div class="toast-msg" id="toastMsg"></div>
+</div>
+
+
+{% block page_js %}
+<script src="{% static 'boards/js/pages/profile.js' %}"></script>
+{% endblock %}
+{% endblock %}

@@ -1,1 +1,14 @@
-{% include 'start_pages/about.html' %}
+{% extends 'layout/profile_layout.html' %}
+{% load static %}
+
+{% block page_css %}
+<link href="{% static 'boards/css/pages/about.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+{% include 'components/start_pages/about.html' %}
+{% endblock %}
+
+{% block page_js %}
+<script src="{% static 'boards/js/pages/about.js' %}"></script>
+{% endblock %}

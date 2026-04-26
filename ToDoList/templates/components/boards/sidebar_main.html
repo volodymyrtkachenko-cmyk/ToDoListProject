@@ -8,13 +8,15 @@
     <div class="sb-scroll">
 
         <span class="sb-lbl mb-2 mt-1 d-block">Навігація</span>
-        <a class="sb-link active mb-1">
+        <a class="sb-link mb-1 {% if request.resolver_match.url_name == 'main' %}active{% endif %}"
+           href="{% url 'main' %}">
             <svg viewBox="0 0 16 16">
                 <path d="M2 6.5L8 2l6 4.5V14a1 1 0 01-1 1H3a1 1 0 01-1-1V6.5z"/>
             </svg>
             <span>Головна</span>
         </a>
-        <a class="sb-link">
+        <a class="sb-link {% if request.resolver_match.url_name == 'archive' %}active{% endif %}"
+           href="{% url 'archive' %}">
             <svg viewBox="0 0 16 16">
                 <rect x="2" y="3" width="12" height="11" rx="1.5"/>
                 <path d="M5 3V1.5M11 3V1.5M2 7h12"/>
@@ -24,31 +26,33 @@
 
         <div class="sb-sec-row mt-3 mb-2">
             <span class="sb-lbl">Категорії</span>
-            <button class="ib">
-                <svg viewBox="0 0 12 12">
-                    <line x1="6" y1="1" x2="6" y2="11"/>
-                    <line x1="1" y1="6" x2="11" y2="6"/>
+            <button class="ib" type="button" data-bs-toggle="modal" data-bs-target="#createCategoryModal"
+                    aria-label="Відкрити категорії">
+                <svg viewBox="0 0 12 12" width="12" height="12">
+                    <line x1="6" y1="1" x2="6" y2="11" stroke="currentColor" stroke-width="2"/>
+                    <line x1="1" y1="6" x2="11" y2="6" stroke="currentColor" stroke-width="2"/>
                 </svg>
             </button>
         </div>
 
+        {% for category in categories %}
         <div class="sb-cat">
-            <span class="dot" style="background:#6c63ff"></span>
-            <span class="sb-cat__n">Робота</span>
+            <span class="dot" style="background:{{ category.color }};"></span>
+            <span class="sb-cat__n">{{ category.name }}</span>
             <span class="badge-cnt">0</span>
+            {% if not category.is_default %}
+            <form method="POST" action="{% url 'delete_category' category.pk %}"
+                  onsubmit="return confirm('Видалити категорію «{{ category.name }}»?')">
+                {% csrf_token %}
+                <button type="submit" class="sb-cat__delete">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </button>
+            </form>
+            {% endif %}
         </div>
-
-        <div class="sb-cat">
-            <span class="dot" style="background:#34d399"></span>
-            <span class="sb-cat__n">Особисте</span>
-            <span class="badge-cnt">0</span>
-        </div>
-
-        <div class="sb-cat">
-            <span class="dot" style="background:#f59e0b"></span>
-            <span class="sb-cat__n">Навчання</span>
-            <span class="badge-cnt">0</span>
-        </div>
+        {% endfor %}
 
     </div><!-- /scroll -->
 
@@ -79,33 +83,26 @@
 
         <!-- dropdown (opens upward) -->
         <div class="set-dd" id="setMenu">
-            <a class="dd-item">
+            <a class="dd-item" href="{% url 'profile' %}">
                 <svg viewBox="0 0 16 16">
                     <circle cx="8" cy="5.5" r="2.5"/>
                     <path d="M2.5 14c0-3 2.5-5.5 5.5-5.5s5.5 2.5 5.5 5.5"/>
                 </svg>
                 Профіль
             </a>
-            <a class="dd-item">
-                <svg viewBox="0 0 16 16">
-                    <circle cx="8" cy="8" r="2.5"/>
-                    <path d="M8 1v1.5M8 13.5V15M1 8h1.5M13.5 8H15M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M11.5 4.5l1.1-1.1M3.4 12.6l1.1-1.1"/>
-                </svg>
-                Налаштування
-            </a>
-            <a class="dd-item" href="{% url 'contacts' %}" >
+            <a class="dd-item" href="{% url 'contacts_boards' %}">
                 <svg viewBox="0 0 16 16" fill="currentColor">
                     <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3Zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>
                 </svg>
                 Контакти
             </a>
-            <a class="dd-item" href="{% url 'about' %}">
+            <a class="dd-item" href="{% url 'about_boards' %}">
                 <svg viewBox="0 0 16 16">
                     <circle cx="8" cy="8" r="6"/>
                     <line x1="8" y1="7" x2="8" y2="11"/>
                     <circle cx="8" cy="5" r=".5" fill="currentColor" stroke="none"/>
                 </svg>
-                Про застосунок
+                Про нас
             </a>
             <div class="dd-div"></div>
             <a href="{% url 'logout' %}" class="dd-item danger" style="text-decoration: none;">
@@ -117,12 +114,19 @@
         </div>
 
         <div class="user-row">
-            <div class="user-ava">В</div>
+            <a href="{% url 'profile' %}" style="text-decoration: none;">
+                {% if user.profile.avatar %}
+                <img src="{{ user.profile.avatar.url }}" class="user-ava" style="object-fit: cover;" alt="Avatar">
+                {% else %}
+                <div class="user-ava">{{ user.username.0|upper }}</div>
+                {% endif %}
+            </a>
+
             <div class="user-info">
                 <div class="user-name">{{ user.username|truncatechars:15 }}</div>
                 <div class="user-sub">Особистий акаунт</div>
             </div>
-            <!-- settings icon button — right of profile -->
+
             <button class="set-btn" id="setBtn" aria-label="Налаштування">
                 <svg class="ico" viewBox="0 0 16 16">
                     <circle cx="8" cy="8" r="2.5"/>
@@ -133,3 +137,39 @@
 
     </div>
 </aside>
+<style>
+    .user-ava {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sb-cat__delete {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        background: rgba(255, 255, 255, 0.06);
+        border: none;
+        border-radius: 4px;
+        color: #64748b;
+        cursor: pointer;
+        padding: 0;
+        transition: background 0.15s, color 0.15s;
+        flex-shrink: 0;
+    }
+
+    .sb-cat__delete:hover {
+        background: rgba(248, 113, 113, 0.15);
+        color: #f87171;
+    }
+
+    .sb-cat:hover .sb-cat__delete {
+        display: flex;
+    }
+</style>

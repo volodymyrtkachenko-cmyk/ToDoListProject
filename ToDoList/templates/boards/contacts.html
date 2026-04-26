@@ -1,0 +1,10 @@
+{% extends 'layout/profile_layout.html' %}
+{% load static %}
+
+{% block page_css %}
+<link href="{% static 'boards/css/pages/contacts.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+{% include 'components/start_pages/contacts.html' %}
+{% endblock %}

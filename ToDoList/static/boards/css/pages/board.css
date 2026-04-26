@@ -1,0 +1,378 @@
+/* ══════════════════════════════════════════════
+   PAGE: BOARD.CSS — Тижнева дошка
+   ══════════════════════════════════════════════ */
+
+/* ── Обгортка дошки ── */
+.board-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* ── ЗАГОЛОВОК ТИЖНЯ ── */
+.board-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--brd);
+    flex-shrink: 0;
+}
+
+.week-nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.week-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--rs);
+    border: 1px solid var(--brd);
+    background: var(--bg-elev);
+    color: var(--t2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .15s, color .15s;
+    flex-shrink: 0;
+}
+
+.week-btn:hover {
+    background: var(--bg-hov);
+    color: var(--t1);
+}
+
+.week-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+.week-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--t1);
+    min-width: 180px;
+    text-align: center;
+    letter-spacing: -0.02em;
+}
+
+.week-today-btn {
+    margin-left: auto;
+    height: 28px;
+    padding: 0 12px;
+    border-radius: var(--rs);
+    border: 1px solid var(--brd);
+    background: var(--bg-elev);
+    color: var(--t2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s;
+}
+
+.week-today-btn:hover {
+    background: var(--bg-hov);
+    color: var(--t1);
+    border-color: var(--brd-h);
+}
+
+/* ── СІТКА 7 КОЛОНОК ── */
+.board-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* ── КОЛОНКА ДНЯ ── */
+.day-col {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--brd);
+    overflow: hidden;
+    animation: colIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.day-col:last-child {
+    border-right: none;
+}
+
+.day-col:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.day-col:nth-child(2) {
+    animation-delay: 0.09s;
+}
+
+.day-col:nth-child(3) {
+    animation-delay: 0.13s;
+}
+
+.day-col:nth-child(4) {
+    animation-delay: 0.17s;
+}
+
+.day-col:nth-child(5) {
+    animation-delay: 0.21s;
+}
+
+.day-col:nth-child(6) {
+    animation-delay: 0.25s;
+}
+
+.day-col:nth-child(7) {
+    animation-delay: 0.29s;
+}
+
+@keyframes colIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.day-head {
+    padding: 10px 10px 8px;
+    border-bottom: 1px solid var(--brd);
+    flex-shrink: 0;
+    user-select: none;
+}
+
+.day-name {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--t3);
+    margin-bottom: 2px;
+}
+
+.day-date {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: var(--t2);
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Стан "Сьогодні" */
+.day-col.is-today {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.day-col.is-today .day-name {
+    color: var(--accent);
+}
+
+.day-col.is-today .day-date {
+    color: #ffffff;
+}
+
+.today-dot {
+    display: inline-block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #8a8a96;
+    margin-left: 6px;
+    flex-shrink: 0;
+    vertical-align: middle;
+    margin-bottom: 2px;
+}
+
+.day-col.is-weekend .day-date {
+    color: var(--t3);
+}
+
+/* ── СПИСОК ЗАДАЧ ── */
+.day-tasks {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.day-tasks::-webkit-scrollbar {
+    width: 3px;
+}
+
+.day-tasks::-webkit-scrollbar-thumb {
+    background: var(--bg-hov);
+    border-radius: 3px;
+}
+
+.day-empty {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--t3);
+    font-size: 12px;
+    opacity: 0.5;
+    cursor: pointer;
+    border-radius: var(--rs);
+    transition: background .15s, opacity .15s;
+}
+
+.day-empty:hover {
+    background: var(--bg-hov);
+    opacity: 0.8;
+}
+
+.day-add-btn {
+    margin: 4px 8px 8px;
+    padding: 6px;
+    border-radius: var(--rs);
+    border: 1px dashed var(--brd);
+    background: none;
+    color: var(--t3);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: background .15s, color .15s, border-color .15s;
+    flex-shrink: 0;
+}
+
+.day-add-btn:hover {
+    background: var(--bg-hov);
+    color: var(--t2);
+    border-color: var(--brd-h);
+}
+
+.day-add-btn svg {
+    width: 11px;
+    height: 11px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+/* ── КАРТКА ЗАДАЧІ ── */
+.task-card {
+    background: var(--bg-elev);
+    border: 1px solid var(--brd);
+    border-radius: var(--rs);
+    padding: 8px 10px 8px 13px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: background .15s, border-color .15s, transform .15s;
+    animation: taskIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes taskIn {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.task-card:hover {
+    background: var(--bg-hov);
+    border-color: var(--brd-h);
+    transform: translateY(-1px);
+}
+
+.task-card.is-done {
+    opacity: 0.4;
+}
+
+.task-card.is-done .task-title {
+    text-decoration: line-through;
+}
+
+.task-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--task-color, var(--accent));
+    border-radius: 8px 0 0 8px;
+}
+
+.task-title {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--t1);
+    line-height: 1.35;
+    margin-bottom: 5px;
+}
+
+.task-meta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.task-priority {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 2px 5px;
+    border-radius: 4px;
+}
+
+.task-priority.high {
+    background: rgba(248, 113, 113, .15);
+    color: #f87171;
+}
+
+.task-priority.med {
+    background: rgba(251, 191, 36, .12);
+    color: #fbbf24;
+}
+
+.task-priority.low {
+    background: rgba(52, 211, 153, .12);
+    color: #34d399;
+}
+
+.task-cat {
+    font-size: 10.5px;
+    color: var(--t3);
+}
+
+/* ── МОБІЛЬНА ВЕРСІЯ ── */
+@media (max-width: 767.98px) {
+    .board-grid {
+        grid-template-columns: repeat(7, minmax(140px, 1fr));
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .week-label {
+        min-width: 140px;
+        font-size: 12px;
+    }
+}
