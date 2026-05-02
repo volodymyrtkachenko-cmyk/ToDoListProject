@@ -6,16 +6,6 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
-
-    def __str__(self):
-        return self.user.username
-
-    class Meta:
-        verbose_name = 'профіль'
-        verbose_name_plural = 'профілі'
 
 
 class Category(models.Model):
@@ -48,9 +38,7 @@ class Category(models.Model):
         verbose_name_plural = 'категорії'
         ordering = ['order']
         constraints = [
-            # гарантує унікальність кольору на рівні БД, а не тільки в Python
             models.UniqueConstraint(fields=['user', 'color'], name='unique_user_color'),
-            # гарантує що дефолтна категорія у юзера може бути тільки одна
             models.UniqueConstraint(
                 fields=['user', 'is_default'],
                 condition=models.Q(is_default=True),
