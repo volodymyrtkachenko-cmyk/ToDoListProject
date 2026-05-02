@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════
-   PAGE: BOARD.JS — Тижнева дошка
+   PAGE: BOARD.JS — Тижнева дошка (Фінальна версія)
    ══════════════════════════════════════════════ */
 
 /* ── КОНСТАНТИ ── */
@@ -9,19 +9,12 @@ const MONTHS_GEN = [
     'липня', 'серпня', 'вересня', 'жовтня', 'листопада', 'грудня',
 ];
 
-const CAT_COLORS = {
-    work: '#6c63ff',
-    personal: '#34d399',
-    health: '#fb923c',
-    study: '#f472b6',
-    finance: '#fbbf24',
-    other: '#8a8a96',
-};
-
 const PRI_LABELS = {high: 'Високий', med: 'Середній', low: 'Низький'};
 
 /* ── СТАН ── */
 let weekOffset = 0;
+let allTasks = []; // Масив для зберігання всіх завдань з бекенду
+let activeCategoryId = null; // Зберігає ID активної категорії для фільтрації
 
 /* ── ДОПОМІЖНІ ФУНКЦІЇ ── */
 function fmt(d) {
@@ -49,6 +42,7 @@ function getWeekDates(offset = 0) {
 }
 
 function escHtml(s) {
+    if (!s) return '';
     return String(s)
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
@@ -72,6 +66,8 @@ function renderWeekLabel(dates) {
 /* ── РЕНДЕР ДОШКИ ── */
 function renderBoard() {
     const grid = document.getElementById('boardGrid');
+    if (!grid) return;
+
     const today = fmt(new Date());
     const dates = getWeekDates(weekOffset);
 
@@ -81,6 +77,7 @@ function renderBoard() {
     dates.forEach((date, idx) => {
         const dateStr = fmt(date);
         const isToday = dateStr === today;
+        const isPast = dateStr < today;
         const isWeekend = idx >= 5;
 
         const col = document.createElement('div');
@@ -88,6 +85,7 @@ function renderBoard() {
             .filter(Boolean).join(' ');
         col.dataset.date = dateStr;
 
+        // Рендеримо кнопки лише якщо це не минулий день
         col.innerHTML = `
             <div class="day-head">
                 <div class="day-name">${DAYS_UK[date.getDay()]}</div>
@@ -97,100 +95,213 @@ function renderBoard() {
                 </div>
             </div>
             <div class="day-tasks" id="tasks-${dateStr}">
-                <div class="day-empty">+ додати</div>
+                ${!isPast
+            ? '<div class="day-empty">+ додати</div>'
+            : '<div class="past-empty" style="display: none;"></div>'}
             </div>
+            ${!isPast ? `
             <button class="day-add-btn" data-date="${dateStr}">
                 <svg viewBox="0 0 12 12"><line x1="6" y1="1" x2="6" y2="11"/><line x1="1" y1="6" x2="11" y2="6"/></svg>
                 Додати
-            </button>
+            </button>` : ''}
         `;
 
         grid.appendChild(col);
     });
-
-    /* Кнопки "Додати" → відкривають модалку створення задачі */
-    grid.querySelectorAll('.day-add-btn, .day-empty').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation(); // Зупиняємо "спливання" кліку
-
-            // 1. Отримуємо дату з колонки
-            const date = btn.dataset.date || btn.closest('.day-col')?.dataset.date;
-
-            // 2. Знаходимо модальне вікно
-            const modalEl = document.getElementById('createModal');
-            if (!modalEl) {
-                console.error("❌ Помилка: Модальне вікно з id='createModal' не знайдено!");
-                return;
-            }
-
-            // 3. Підставляємо дату в поле "Дедлайн"
-            const dateInput = modalEl.querySelector('input[name="deadline"]');
-            if (dateInput && date) {
-                dateInput.value = date;
-            }
-
-            // 4. Відкриваємо модалку через Bootstrap
-            try {
-                const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-                modal.show();
-            } catch (err) {
-                console.error("❌ Помилка Bootstrap:", err);
-            }
-        });
-    });
 }
-
-/* ── НАВІГАЦІЯ ПО ТИЖНЯХ ── */
-document.getElementById('weekPrev')?.addEventListener('click', () => {
-    weekOffset--;
-    renderBoard();
-});
-document.getElementById('weekNext')?.addEventListener('click', () => {
-    weekOffset++;
-    renderBoard();
-});
-document.getElementById('weekToday')?.addEventListener('click', () => {
-    weekOffset = 0;
-    renderBoard();
-});
 
 /* ── РЕНДЕР ЗАДАЧ ── */
 function renderTasks(tasks = []) {
+    const today = fmt(new Date());
+
     document.querySelectorAll('.day-tasks').forEach(list => {
-        list.innerHTML = '<div class="day-empty">+ додати</div>';
+        const dateStr = list.id.replace('tasks-', '');
+        const isPast = dateStr < today;
+
+        list.innerHTML = !isPast
+            ? '<div class="day-empty">+ додати</div>'
+            : '<div class="past-empty" style="display: none;"></div>';
     });
 
-    tasks.forEach(task => {
+    const tasksToRender = activeCategoryId
+        ? tasks.filter(t => String(t.category_id) === String(activeCategoryId))
+        : tasks;
+
+    tasksToRender.forEach(task => {
         const list = document.getElementById(`tasks-${task.date}`);
         if (!list) return;
 
         list.querySelector('.day-empty')?.remove();
+        list.querySelector('.past-empty')?.remove();
 
-        const priCls = task.priority === 'high' ? 'high'
-            : task.priority === 'low' ? 'low' : 'med';
+        let classes = 'task-card';
+        if (task.is_done) classes += ' is-done';
+        if (task.is_overdue) classes += ' is-overdue';
 
         const card = document.createElement('div');
-        card.className = `task-card${task.is_done ? ' is-done' : ''}`;
-        card.style.setProperty('--task-color', CAT_COLORS[task.category] ?? CAT_COLORS.other);
+        card.className = classes;
+        card.style.setProperty('--task-color', task.category_color || '#8a8a96');
         card.dataset.id = task.id;
 
         card.innerHTML = `
             <div class="task-title">${escHtml(task.title)}</div>
             <div class="task-meta">
-                <span class="task-priority ${priCls}">${PRI_LABELS[task.priority] || ''}</span>
-                <span class="task-cat">${task.category || ''}</span>
-            </div>
+                <span class="task-priority ${task.priority}">${PRI_LABELS[task.priority] || ''}</span>
+                </div>
         `;
 
         card.addEventListener('click', () => {
-            if (typeof openEditModal === 'function') openEditModal(task.id);
+            openEditModal(task.id);
         });
 
         list.appendChild(card);
     });
 }
 
+/* ── ЛОГІКА ФІЛЬТРАЦІЇ ПО КАТЕГОРІЯХ ── */
+function initCategoryFilter() {
+    const categories = document.querySelectorAll('.sb-cat');
 
-/* ── СТАРТ ── */
-renderBoard();
+    categories.forEach(cat => {
+        cat.addEventListener('click', function (e) {
+            if (e.target.closest('.sb-cat__delete')) return;
+            if (this.classList.contains('active-filter')) return;
+
+            const categoryId = this.getAttribute('data-id');
+            const isDefault = this.getAttribute('data-default') === 'true';
+
+            categories.forEach(c => c.classList.remove('active-filter'));
+            this.classList.add('active-filter');
+
+            activeCategoryId = isDefault ? null : categoryId;
+            renderTasks(allTasks);
+        });
+    });
+}
+
+
+/* ── НАВІГАЦІЯ ПО ТИЖНЯХ ── */
+document.getElementById('weekPrev')?.addEventListener('click', () => {
+    weekOffset--;
+    renderBoard();
+    renderTasks(allTasks);
+});
+document.getElementById('weekNext')?.addEventListener('click', () => {
+    weekOffset++;
+    renderBoard();
+    renderTasks(allTasks);
+});
+document.getElementById('weekToday')?.addEventListener('click', () => {
+    weekOffset = 0;
+    renderBoard();
+    renderTasks(allTasks);
+});
+
+/* ── ВІДКРИТТЯ МОДАЛКИ СТВОРЕННЯ (EVENT DELEGATION) ── */
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.day-add-btn, .day-empty');
+    if (!btn) return;
+
+    e.preventDefault();
+
+    const date = btn.dataset.date || btn.closest('.day-col')?.dataset.date;
+    const modalEl = document.getElementById('createModal');
+
+    if (!modalEl) {
+        console.error("❌ Помилка: Модальне вікно з id='createModal' не знайдено!");
+        return;
+    }
+
+    const dateInput = modalEl.querySelector('input[name="due_date"]');
+    if (dateInput && date) {
+        dateInput.value = date;
+    }
+
+    try {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+    } catch (err) {
+        console.error("❌ Помилка Bootstrap:", err);
+        modalEl.classList.add('show');
+        modalEl.style.display = 'block';
+    }
+});
+
+/* ── ВІДКРИТТЯ МОДАЛКИ РЕДАГУВАННЯ ── */
+function openEditModal(taskId) {
+    const modalEl = document.getElementById('taskModal');
+    if (!modalEl) {
+        console.warn("Модальне вікно з id='taskModal' ще не створено!");
+        return;
+    }
+
+    const task = allTasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    // 1. Заповнюємо базові поля
+    document.getElementById('edit-task-id').value = task.id;
+    document.getElementById('edit-task-title').value = task.title;
+    document.getElementById('edit-task-desc').value = task.description || '';
+
+    const dateInput = document.getElementById('edit-task-date');
+    if (dateInput) dateInput.value = task.date || '';
+
+    const previewDot = document.getElementById('edit-preview-dot');
+    const previewCat = document.getElementById('edit-preview-cat');
+    const previewPri = document.getElementById('edit-preview-pri');
+
+    if (previewDot) previewDot.style.background = task.category_color;
+    if (previewCat) previewCat.textContent = task.category_name;
+
+    if (previewPri) {
+        previewPri.textContent = PRI_LABELS[task.priority] || '';
+        // Важливо: очищаємо старі класи і додаємо лише актуальний пріоритет
+        previewPri.className = `badge ${task.priority}`;
+    }
+
+    if (previewDot) previewDot.style.background = task.category_color;
+    if (previewCat) previewCat.textContent = task.category_name;
+    if (previewPri) {
+        previewPri.textContent = PRI_LABELS[task.priority] || '';
+        // Очищаємо попередні класи пріоритету і додаємо новий
+        previewPri.className = `badge ${task.priority}`;
+    }
+
+    // 3. Відмічаємо радіокнопку категорії
+    const catRadios = document.querySelectorAll('.edit-category-radio');
+    catRadios.forEach(radio => {
+        radio.checked = String(radio.value) === String(task.category_id);
+    });
+
+    // 4. Відмічаємо радіокнопку пріоритету
+    const priRadios = document.querySelectorAll('.edit-priority-radio');
+    const priMapReverse = {'low': '1', 'med': '2', 'high': '3'};
+    priRadios.forEach(radio => {
+        radio.checked = radio.value === priMapReverse[task.priority];
+    });
+
+    // 5. Відкриваємо вікно
+    try {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+    } catch (err) {
+        modalEl.classList.add('show');
+        modalEl.style.display = 'block';
+    }
+}
+
+/* ── СТАРТ ДОДАТКУ ── */
+document.addEventListener('DOMContentLoaded', () => {
+    const tasksDataElement = document.getElementById('tasks-data');
+    if (tasksDataElement) {
+        try {
+            allTasks = JSON.parse(tasksDataElement.textContent);
+        } catch (e) {
+            console.error("❌ Помилка парсингу завдань:", e);
+        }
+    }
+
+    initCategoryFilter();
+    renderBoard();
+    renderTasks(allTasks);
+});

@@ -1072,3 +1072,271 @@ a {
     color: #555;
     font-weight: 600;
 }
+
+/* Toasts */
+.toast {
+    background-color: #1e1e2e;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.toast.text-bg-success {
+    background-color: #1a3a2a !important;
+    border-color: #2d6a4f !important;
+    color: #b7e4c7 !important;
+}
+
+.toast.text-bg-danger {
+    background-color: #3a1a1a !important;
+    border-color: #c0392b !important;
+    color: #f5b7b1 !important;
+}
+
+.toast.text-bg-warning {
+    background-color: #3a2e1a !important;
+    border-color: #d4ac0d !important;
+    color: #fdebd0 !important;
+}
+
+.toast .btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.sb-cat--ghost {
+    opacity: 0.4;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+}
+
+/* Стиль для вибраної категорії */
+.sb-cat {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.sb-cat.active-filter {
+    background-color: rgba(255, 255, 255, 0.1); /* Або інший колір виділення, залежить від вашої теми */
+    border-radius: 6px;
+}
+
+/* ── СТИЛІ ДЛЯ ПРОСТРОЧЕНИХ ЗАВДАНЬ (НЕЙТРАЛЬНІ) ── */
+.task-card.is-overdue {
+    border: 1px solid rgba(248, 113, 113, 0.25); /* Дуже легка, тонка червонувата рамка */
+    background: rgba(248, 113, 113, 0.03); /* Майже непомітний відтінок фону */
+}
+
+/* Якщо ви додавали зміну кольору тексту (.task-title) - просто видаліть її,
+   щоб текст залишався стандартного кольору. Або додайте це правило, щоб перебити старе: */
+.task-card.is-overdue .task-title {
+    color: inherit;
+}
+
+/* ── Кольори для бейджа у прев'ю (верхній блок) ── */
+#edit-preview-pri.high {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+#edit-preview-pri.med {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+#edit-preview-pri.low {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+/* ══════════════════════════════════════════════
+   РЕДАГУВАННЯ ЗАВДАННЯ (FLO MODAL)
+   ══════════════════════════════════════════════ */
+
+.flo-modal {
+    background: #1c1c21 !important;
+    color: #f4f4f5;
+    border: 1px solid #333 !important;
+    border-radius: 12px;
+}
+
+.flo-modal-header {
+    border-bottom: 1px solid #2a2a32;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flo-modal-title {
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin: 0;
+    font-family: 'Syne', sans-serif;
+}
+
+.flo-close-btn {
+    background: #2a2a32;
+    border: none;
+    color: #a1a1aa;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.flo-preview {
+    background: #18181b;
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid #2a2a32;
+}
+
+.flo-label {
+    color: #a1a1aa;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    display: block;
+    font-weight: 500;
+}
+
+.flo-input {
+    background: #18181b;
+    border: 1px solid #333;
+    color: #f4f4f5;
+    border-radius: 8px;
+    padding: 12px 16px;
+    width: 100%;
+    outline: none;
+    font-family: inherit;
+}
+
+textarea.flo-input {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Радіокнопки (блоки категорій та пріоритетів) */
+.flo-radio-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.flo-radio-flex {
+    display: flex;
+    gap: 12px;
+}
+
+.flo-radio-input {
+    display: none;
+}
+
+.flo-radio-box {
+    background: #18181b;
+    border: 1px solid #333;
+    padding: 14px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #71717a;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+
+.flo-radio-flex .flo-radio-box {
+    justify-content: center;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+/* Стан "Вибрано" для категорій */
+.edit-category-radio:checked + .flo-radio-box {
+    border-color: #3b82f6 !important;
+    color: #f4f4f5;
+    background: rgba(59, 130, 246, 0.05);
+}
+
+/* ── КОЛЬОРИ ПРІОРИТЕТІВ (ВИБІР) ── */
+
+/* Високий */
+.flo-priority-radio[value="3"]:checked + .flo-radio-box {
+    border-color: #ef4444 !important;
+    color: #ef4444 !important;
+    background: transparent !important;
+}
+
+/* Середній */
+.flo-priority-radio[value="2"]:checked + .flo-radio-box {
+    border-color: #f59e0b !important;
+    color: #f59e0b !important;
+    background: transparent !important;
+}
+
+/* Низький */
+.flo-priority-radio[value="1"]:checked + .flo-radio-box {
+    border-color: rgb(34 197 94 / 0, 5) !important;
+    color: #4ade80 !important;
+    background: transparent !important;
+}
+
+/* ── КОЛЬОРИ БЕЙДЖА У ПРЕВ'Ю ── */
+#edit-preview-pri.high {
+    background: rgba(239, 68, 68, 0.15) !important;
+    color: #ef4444 !important;
+}
+
+#edit-preview-pri.med {
+    background: rgba(245, 158, 11, 0.15) !important;
+    color: #f59e0b !important;
+}
+
+#edit-preview-pri.low {
+    background: rgba(59, 130, 246, 0.15) !important;
+    color: #4ade80 !important;
+}
+
+/* Кнопки дій */
+.flo-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+}
+
+.flo-btn-done {
+    background: #122b22;
+    border: 1px solid #122b22;
+    color: #10b981;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.flo-btn-cancel {
+    background: #18181b;
+    border: 1px solid #2a2a32;
+    color: #a1a1aa;
+    border-radius: 8px;
+    padding: 12px 20px;
+    cursor: pointer;
+}
+
+.flo-btn-save {
+    background: #f4f4f5;
+    color: #18181b;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-weight: 700;
+    cursor: pointer;
+}

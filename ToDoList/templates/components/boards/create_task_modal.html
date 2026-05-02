@@ -15,7 +15,7 @@
             </div>
 
             <!-- Форма -->
-            <form method="POST" action="#">
+            <form method="POST" action="{% url 'create_task' %}">
                 {% csrf_token %}
                 <div class="task-modal-body">
 
@@ -33,15 +33,20 @@
                                   placeholder="Додатковий опис..." rows="3"></textarea>
                     </div>
 
+
                     <!-- Категорія -->
                     <div class="task-field">
                         <label class="task-label">Категорія</label>
                         <div class="task-categories">
+                            {% for category in form_categories %}
                             <label class="task-cat-option">
-                                <input type="radio" name="category" value="1" hidden/>
-                                <span class="task-cat-dot" style="background: #8b5cf6;"></span>
-                                Робота
+                                <!-- ТУТ ДОДАНО checked ДЛЯ ПЕРШОГО ЕЛЕМЕНТА -->
+                                <input type="radio" name="category" value="{{ category.id }}" hidden required {% if forloop.first %}checked{% endif %}/>
+
+                                <span class="task-cat-dot" style="background: {{ category.color }};"></span>
+                                {{ category.name }}
                             </label>
+                            {% endfor %}
                         </div>
                     </div>
 
@@ -50,26 +55,27 @@
                         <label class="task-label">Пріоритет</label>
                         <div class="task-priority">
                             <label class="task-priority-option high">
-                                <input type="radio" name="priority" value="high" hidden/> Високий
+                                <input type="radio" name="priority" value="3" hidden/> Високий
                             </label>
                             <label class="task-priority-option medium">
-                                <input type="radio" name="priority" value="medium" hidden checked/> Середній
+                                <input type="radio" name="priority" value="2" hidden checked/> Середній
                             </label>
                             <label class="task-priority-option low">
-                                <input type="radio" name="priority" value="low" hidden/> Низький
+                                <input type="radio" name="priority" value="1" hidden/> Низький
                             </label>
                         </div>
                     </div>
 
                     <!-- Дедлайн -->
+                    <!-- Дедлайн -->
                     <div class="task-field">
                         <label class="task-label">Дедлайн</label>
-                        <input type="date" name="deadline" class="task-input task-input-date"/>
+                        <input type="date" name="due_date" class="task-input task-input-date"
+                               value="{% now 'Y-m-d' %}"/>
                     </div>
 
                 </div>
 
-                <!-- Кнопки -->
                 <div class="task-modal-footer">
                     <button type="button" class="task-btn-cancel" data-bs-dismiss="modal">Скасувати</button>
                     <button type="submit" class="task-btn-create">Створити</button>

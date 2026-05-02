@@ -21,7 +21,7 @@ def contacts(request):
         send_mail(
             subject=f'Нове запитання від {name}',
             message=full_message,
-            from_email='smtp.gmail.com',
+            from_email='vova38338@gmail.com',
             recipient_list=['vova38338@gmail.com']
         )
         if request.user.is_authenticated:

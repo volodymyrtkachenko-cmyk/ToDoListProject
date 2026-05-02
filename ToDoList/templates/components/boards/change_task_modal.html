@@ -1,10 +1,316 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<style>
+    .flo-modal {
+        background: #1c1c21;
+        color: #f4f4f5;
+        border: 1px solid #333;
+        border-radius: 12px;
+    }
+
+    .flo-modal-header {
+        border-bottom: 1px solid #2a2a32;
+        padding: 20px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .flo-modal-title {
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin: 0;
+    }
+
+    .flo-close-btn {
+        background: #2a2a32;
+        border: none;
+        color: #a1a1aa;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    .flo-close-btn:hover {
+        background: #3f3f46;
+        color: white;
+    }
+
+    .flo-preview {
+        background: #18181b;
+        border-radius: 8px;
+        padding: 16px;
+        border: 1px solid #2a2a32;
+    }
+
+    .flo-label {
+        color: #a1a1aa;
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+        display: block;
+        font-weight: 500;
+    }
+
+    .flo-input {
+        background: #18181b;
+        border: 1px solid #333;
+        color: #f4f4f5;
+        border-radius: 8px;
+        padding: 12px 16px;
+        width: 100%;
+        transition: border-color 0.2s;
+        outline: none;
+        font-size: 1rem;
+    }
+
+    .flo-input:focus {
+        border-color: #555;
+    }
+
+    .flo-input[type="date"] {
+        color-scheme: dark;
+    }
+
+    textarea.flo-input {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    /* Радіокнопки (блоки) */
+    .flo-radio-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .flo-radio-flex {
+        display: flex;
+        gap: 12px;
+    }
+
+    .flo-radio-flex > label {
+        flex: 1;
+    }
+
+    .flo-radio-input {
+        display: none;
+    }
+
+    .flo-radio-box {
+        background: #18181b;
+        border: 1px solid #333;
+        padding: 14px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #a1a1aa;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        font-weight: 500;
+    }
+
+    .flo-radio-flex .flo-radio-box {
+        justify-content: center;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+
+    /* Активні стани категорій */
+    .edit-category-radio:checked + .flo-radio-box {
+        border-color: #3b82f6;
+        color: #f4f4f5;
+        background: rgba(59, 130, 246, 0.05);
+    }
+
+    /* Кольори для пріоритетів (як на скриншоті) */
+    .flo-priority-radio[value="3"]:checked + .flo-radio-box {
+        border-color: #ef4444;
+        color: #ef4444;
+        background: transparent;
+    }
+
+    /* Високий - Червоний */
+    .flo-priority-radio[value="2"]:checked + .flo-radio-box {
+        border-color: #a1a1aa;
+        color: #a1a1aa;
+        background: transparent;
+    }
+
+    /* Середній - Сірий */
+    .flo-priority-radio[value="1"]:checked + .flo-radio-box {
+        border-color: #555;
+        color: #888;
+        background: transparent;
+    }
+
+    /* Низький - Темніший */
+
+    /* Нижні кнопки */
+    .flo-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 32px;
+    }
+
+    .flo-btn-done {
+        background: #122b22;
+        border: 1px solid #122b22;
+        color: #10b981;
+        border-radius: 8px;
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+        font-size: 0.95rem;
+    }
+
+    .flo-btn-done:hover {
+        background: #163a2d;
+    }
+
+    .flo-btn-cancel {
+        background: #18181b;
+        border: 1px solid #2a2a32;
+        color: #a1a1aa;
+        border-radius: 8px;
+        padding: 12px 20px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+        font-size: 0.95rem;
+    }
+
+    .flo-btn-cancel:hover {
+        background: #2a2a32;
+        color: #f4f4f5;
+    }
+
+    .flo-btn-save {
+        background: #f4f4f5;
+        border: 1px solid #f4f4f5;
+        color: #18181b;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 0.95rem;
+        transition: background 0.2s;
+    }
+
+    .flo-btn-save:hover {
+        background: #e4e4e7;
+    }
+</style>
+
+<div class="modal fade" id="taskModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content flo-modal">
+
+            <div class="flo-modal-header">
+                <h5 class="flo-modal-title">Редагувати завдання</h5>
+                <button type="button" class="flo-close-btn" data-bs-dismiss="modal" aria-label="Закрити">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 1l12 12M13 1L1 13"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-body p-4">
+                <form method="POST" action="{% url 'edit_task' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="task_id" id="edit-task-id">
+
+                    <div class="flo-preview d-flex justify-content-between align-items-center mb-4">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="dot" id="edit-preview-dot"
+                                  style="width: 10px; height: 10px; border-radius: 50%; display: inline-block;"></span>
+                            <span id="edit-preview-cat"
+                                  style="font-weight: 700; color: #f4f4f5; font-size: 1rem;"></span>
+                        </div>
+                        <span id="edit-preview-pri"
+                              style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="flo-label">Назва</label>
+                        <input type="text" name="title" id="edit-task-title" class="flo-input" required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="flo-label">Опис</label>
+                        <textarea name="description" id="edit-task-desc" class="flo-input"
+                                  placeholder="Додайте деталі до завдання..."></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="flo-label">Категорія</label>
+                        <div class="flo-radio-grid">
+                            {% for category in form_categories %}
+                            <label style="margin: 0;">
+                                <input type="radio" name="category" value="{{ category.id }}"
+                                       class="flo-radio-input edit-category-radio">
+                                <div class="flo-radio-box">
+                                    <span class="dot"
+                                          style="width: 8px; height: 8px; border-radius: 50%; background: {{ category.color }}; display: inline-block;"></span>
+                                    <span>{{ category.name }}</span>
+                                </div>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="flo-label">Пріоритет</label>
+                        <div class="flo-radio-flex">
+                            <label style="margin: 0;">
+                                <input type="radio" name="priority" value="3"
+                                       class="flo-radio-input flo-priority-radio edit-priority-radio">
+                                <div class="flo-radio-box">Високий</div>
+                            </label>
+                            <label style="margin: 0;">
+                                <input type="radio" name="priority" value="2"
+                                       class="flo-radio-input flo-priority-radio edit-priority-radio">
+                                <div class="flo-radio-box">Середній</div>
+                            </label>
+                            <label style="margin: 0;">
+                                <input type="radio" name="priority" value="1"
+                                       class="flo-radio-input flo-priority-radio edit-priority-radio">
+                                <div class="flo-radio-box">Низький</div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="flo-label">Дата</label>
+                        <input type="date" name="due_date" id="edit-task-date" class="flo-input">
+                    </div>
+
+                    <div class="flo-actions">
+                        <button type="submit" name="action" value="done" class="flo-btn-done">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Виконано
+                        </button>
+                        <div class="d-flex gap-3">
+                            <button type="button" class="flo-btn-cancel" data-bs-dismiss="modal">Скасувати</button>
+                            <button type="submit" name="action" value="save" class="flo-btn-save">Зберегти</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

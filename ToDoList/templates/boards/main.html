@@ -31,5 +31,6 @@
 {% endblock %}
 
 {% block page_js %}
+{{ tasks_json|json_script:"tasks-data" }}
 <script src="{% static 'boards/js/pages/board.js' %}"></script>
 {% endblock %}

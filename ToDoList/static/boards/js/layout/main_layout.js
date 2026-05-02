@@ -146,3 +146,29 @@ setBtn.addEventListener('click', e => {
 document.addEventListener('click', () => {
     setMenu.classList.remove('show');
 });
+
+const sbScroll = document.querySelector('.sb-scroll');
+
+Sortable.create(sbScroll, {
+    animation: 150,
+    draggable: '.sb-cat',
+    ghostClass: 'sb-cat--ghost',
+    filter: '[data-default="true"]',         // заборонити тягати дефолтну
+    onMove(evt) {
+        // заборонити ставити інші категорії ПЕРЕД дефолтною
+        if (evt.related.dataset.default === 'true') return false;
+    },
+    onEnd() {
+        const order = [...sbScroll.querySelectorAll('.sb-cat[data-id]')]
+            .map((el, index) => ({id: el.dataset.id, order: index}));
+
+        fetch("{% url 'reorder_categories' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.cookie.match(/csrftoken=([\w-]+)/)[1],
+            },
+            body: JSON.stringify({order}),
+        });
+    }
+});

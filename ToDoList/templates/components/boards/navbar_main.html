@@ -45,7 +45,28 @@
         <span class="plus">+</span><span class="lbl">Створити</span>
     </button>
 
-    <!-- ══════════ МОДАЛЬНЕ ВІКНО: НОВЕ ЗАВДАННЯ ══════════ -->
-
 
 </header>
+
+<div class="toast-container position-fixed p-3" style="top: 56px; right: 0; z-index: 9999">
+    {% for message in messages %}
+    <div class="toast align-items-center text-bg-{{ message.tags }} border-0 " role="alert">
+        <div class="d-flex">
+            <div class="toast-body">{{ message }}</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.toast').forEach(el => {
+            const toast = bootstrap.Toast.getOrCreateInstance(el, {
+                delay: 3000,
+                autohide: true,
+            });
+            toast.show();
+        });
+    });
+</script>

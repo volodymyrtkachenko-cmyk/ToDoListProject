@@ -36,10 +36,18 @@
         </div>
 
         {% for category in categories %}
-        <div class="sb-cat">
+        <div class="sb-cat" data-id="{{ category.id }}" {% if category.is_default %}data-default="true" {% endif %}>
             <span class="dot" style="background:{{ category.color }};"></span>
             <span class="sb-cat__n">{{ category.name }}</span>
-            <span class="badge-cnt">0</span>
+
+            <span class="badge-cnt">
+                {% if category.is_default %}
+                    {{ tasks_json|length }}
+                {% else %}
+                    {{ category.task_count|default:"0" }}
+                {% endif %}
+            </span>
+
             {% if not category.is_default %}
             <form method="POST" action="{% url 'delete_category' category.pk %}"
                   onsubmit="return confirm('Видалити категорію «{{ category.name }}»?')">
@@ -53,6 +61,7 @@
             {% endif %}
         </div>
         {% endfor %}
+
 
     </div><!-- /scroll -->
 

@@ -1,4 +1,4 @@
-from symtable import Class
+from os import name
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -7,11 +7,15 @@ from django.dispatch import receiver
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
 
     def __str__(self):
         return self.user.username
+
+    class Meta:
+        verbose_name = 'профіль'
+        verbose_name_plural = 'профілі'
 
 
 class Category(models.Model):
@@ -33,6 +37,8 @@ class Category(models.Model):
     name = models.CharField(max_length=20, verbose_name='назва')
     color = models.CharField(max_length=7, choices=Color.choices, default=Color.VIOLET, verbose_name='колір')
     is_default = models.BooleanField(default=False)
+    order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
@@ -40,14 +46,66 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'категорія'
         verbose_name_plural = 'категорії'
+        ordering = ['order']
+        constraints = [
+            # гарантує унікальність кольору на рівні БД, а не тільки в Python
+            models.UniqueConstraint(fields=['user', 'color'], name='unique_user_color'),
+            # гарантує що дефолтна категорія у юзера може бути тільки одна
+            models.UniqueConstraint(
+                fields=['user', 'is_default'],
+                condition=models.Q(is_default=True),
+                name='unique_user_default_category',
+            ),
+        ]
+
+
+class Task(models.Model):
+    class Priority(models.IntegerChoices):
+        LOW = 1, 'Низький'
+        MEDIUM = 2, 'Середній'
+        HIGH = 3, 'Високий'
+
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='tasks')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks')
+    title = models.CharField(max_length=255, verbose_name='назва')
+    description = models.TextField(blank=True, verbose_name='опис')
+    priority = models.IntegerField(choices=Priority.choices, default=Priority.MEDIUM)
+    order = models.PositiveIntegerField(default=0)
+    is_done = models.BooleanField(default=False)
+    is_archived = models.BooleanField(default=False)
+    due_date = models.DateField(null=True, blank=True, verbose_name='дедлайн')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def is_overdue(self):
+        from django.utils import timezone
+        return self.due_date and not self.is_done and self.due_date < timezone.now().date()
+
+    class Meta:
+        verbose_name = 'завдання'
+        verbose_name_plural = 'завдання'
+        ordering = ['order', '-created_at']
 
 
 @receiver(post_save, sender=User)
-def create_default_categories(sender, instance, created, **kwargs):
+def create_default_category(sender, instance, created, **kwargs):
     if created:
         Category.objects.create(
             user=instance,
-            name='Всі завдання',
-            color='#94a3b8',
-            is_default=True,  # щоб не можна було видалити
+            name='Всі',
+            color=Category.Color.SLATE,
+            is_default=True,
+            order=0,
+        )
+
+        Category.objects.create(
+            user=instance,
+            name='Перша ктегорія',
+            color=Category.Color.ORANGE,
+            is_default=False,
+            order=1,
         )

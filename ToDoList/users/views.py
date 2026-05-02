@@ -5,6 +5,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.db.models import Q
 from django.views.decorators.cache import never_cache
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
 
 
 @never_cache
@@ -13,17 +19,37 @@ def register_view(request):
         return redirect('main')
 
     if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        if User.objects.filter(Q(username__icontains=username) | Q(email__icontains=email)).exists():
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '')
+
+        if not username or not email or not password:
             return render(request, 'users/login_register.html',
-                          {'mode': 'register', 'error': "Аккаунт з таким email або імʼям вже існує!",
+                          {'mode': 'register', 'error': "Всі поля є обов'язковими!",
                            'title': 'Реєстрація'})
 
-        user = User.objects.create_user(username, email, password)
-        login(request, user)
-        return redirect('main')
+        if User.objects.filter(Q(username__iexact=username) | Q(email__iexact=email)).exists():
+            return render(request, 'users/login_register.html',
+                          {'mode': 'register', 'error': "Акаунт з таким email або імʼям вже існує!",
+                           'title': 'Реєстрація'})
+
+        user = User.objects.create_user(username=username, email=email, password=password)
+        user.is_active = False
+        user.save()
+
+        current_site = get_current_site(request)
+        mail_subject = 'Активація вашого акаунту'
+        message = render_to_string('users/acc_active_email.html', {  # Цей шаблон створимо на наступному кроці
+            'user': user,
+            'domain': current_site.domain,
+            'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+            'token': default_token_generator.make_token(user),
+        })
+        email_message = EmailMessage(mail_subject, message, to=[email])
+        email_message.send()
+
+        return render(request, 'users/login_register.html',
+                      {'mode': 'login', 'error': 'Акаунт створено! Перевірте пошту для активації.', 'title': 'Вхід'})
 
     return render(request, 'users/login_register.html', {'mode': 'register', 'title': 'Реєстрація'})
 
@@ -34,20 +60,32 @@ def login_view(request):
         return redirect('main')
 
     if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
+        email = request.POST.get('email', '').strip()
+        password = request.POST.get('password', '')
+
+        if not email or not password:
+            return render(request, 'users/login_register.html',
+                          {'mode': 'login', 'error': 'Будь ласка, введіть email та пароль',
+                           'title': 'Вхід'})
 
         try:
             user = User.objects.get(email=email)
 
-            if user.check_password(password):
-                login(request, user)
+            if not user.is_active:
+                return render(request, 'users/login_register.html',
+                              {'mode': 'login', 'error': 'Спочатку підтвердіть вашу пошту!', 'title': 'Вхід'})
+
+            authenticated_user = authenticate(request, username=user.username, password=password)
+            if authenticated_user is not None:
+                login(request, authenticated_user)
                 return redirect('main')
             else:
                 return render(request, 'users/login_register.html',
                               {'mode': 'login', 'error': 'email або пароль не вірний', 'title': 'Вхід'})
 
-        except User.DoesNotExist:
+
+
+        except (User.DoesNotExist, User.MultipleObjectsReturned):
             return render(request, 'users/login_register.html',
                           {'mode': 'login', 'error': 'email або пароль не вірний', 'title': 'Вхід'})
 
@@ -58,3 +96,20 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('home')
+
+
+def activate_view(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        return render(request, 'users/login_register.html',
+                      {'mode': 'login', 'success': 'Пошту підтверджено! Тепер ви можете увійти.', 'title': 'Вхід'})
+    else:
+        return render(request, 'users/login_register.html',
+                      {'mode': 'login', 'error': 'Посилання для активації недійсне або застаріле.', 'title': 'Вхід'})
