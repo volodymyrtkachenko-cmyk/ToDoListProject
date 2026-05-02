@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from django.db.models import Q
 from django.views.decorators.cache import never_cache
@@ -32,7 +32,11 @@ def register_view(request):
             return render(request, 'users/login_register.html',
                           {'mode': 'register', 'error': "Акаунт з таким email або імʼям вже існує!",
                            'title': 'Реєстрація'})
+        if len(password) < 8:
+            return render(request, 'users/login_register.html',
+                          {'mode': 'register', 'error': 'Пароль має бути не менше 8 символів.', 'title': 'Реєстрація'})
 
+        user = User.objects.create_user(username=username, email=email, password=password)
         user = User.objects.create_user(username=username, email=email, password=password)
         user.is_active = False
         user.save()
@@ -113,3 +117,44 @@ def activate_view(request, uidb64, token):
     else:
         return render(request, 'users/login_register.html',
                       {'mode': 'login', 'error': 'Посилання для активації недійсне або застаріле.', 'title': 'Вхід'})
+
+
+
+@login_required
+def password_reset_confirm_view(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is None or user != request.user or not default_token_generator.check_token(user, token):
+        messages.error(request, 'Посилання недійсне або застаріло.')
+        return redirect('profile')
+
+    if request.method == 'POST':
+        new_password1 = request.POST.get('new_password1', '')
+        new_password2 = request.POST.get('new_password2', '')
+
+        if not new_password1 or not new_password2:
+            return render(request, 'users/password_reset_confirm.html',
+                          {'valid_link': True, 'error': 'Заповніть обидва поля.', 'title': 'Новий пароль'})
+
+        if new_password1 != new_password2:
+            return render(request, 'users/password_reset_confirm.html',
+                          {'valid_link': True, 'error': 'Паролі не збігаються.', 'title': 'Новий пароль'})
+
+        if len(new_password1) < 8:
+            return render(request, 'users/password_reset_confirm.html',
+                          {'valid_link': True, 'error': 'Пароль має бути не менше 8 символів.',
+                           'title': 'Новий пароль'})
+
+        user.set_password(new_password1)
+        user.save()
+        update_session_auth_hash(request, user)
+
+        messages.success(request, 'Пароль успішно змінено!')
+        return redirect('profile')
+
+    return render(request, 'users/password_reset_confirm.html',
+                  {'valid_link': True, 'title': 'Новий пароль'})

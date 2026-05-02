@@ -119,7 +119,13 @@
         </div>
 
         <div class="action-row">
-            <button type="reset" class="btn-ghost" onclick="setTimeout(() => { checkStrength(''); checkMatch(); }, 50)">
+            <form method="POST" style="margin: 0;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="send_reset_link">
+                <button type="submit" class="btn-ghost">Забули пароль?</button>
+            </form>
+            <button type="reset" class="btn-ghost"
+                    onclick="setTimeout(() => { checkStrength(''); checkMatch(); }, 50)">
                 Скинути
             </button>
             <button class="btn-save" type="submit">Оновити пароль</button>

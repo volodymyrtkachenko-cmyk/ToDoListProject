@@ -92,7 +92,7 @@ def create_default_category(sender, instance, created, **kwargs):
 
         Category.objects.create(
             user=instance,
-            name='Перша ктегорія',
+            name='Перша категорія',
             color=Category.Color.ORANGE,
             is_default=False,
             order=1,

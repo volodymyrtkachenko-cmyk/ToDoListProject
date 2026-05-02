@@ -9,6 +9,12 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.db.models import Count, Q
 from .models import Category, Task
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
 
 
 def get_available_colors(user):
@@ -244,6 +250,22 @@ def profile(request):
             messages.success(request, 'Фото змінено!')
         else:
             messages.error(request, 'Фото не вибрано')
+    elif action == "send_reset_link":
+        user = request.user
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = default_token_generator.make_token(user)
+        domain = get_current_site(request).domain
+
+        message = render_to_string('users/password_reset_email.html', {
+            'user': user,
+            'domain': domain,
+            'uid': uid,
+            'token': token,
+        })
+
+        EmailMessage(subject='Скидання пароля', body=message, to=[user.email]).send()
+        messages.success(request, f'Посилання для скидання пароля надіслано на {user.email}')
+        return redirect('profile')
 
     return redirect('profile')
 
