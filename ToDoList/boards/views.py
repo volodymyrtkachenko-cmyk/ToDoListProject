@@ -44,7 +44,7 @@ def main(request):
             'category_name': t.category.name,
             'category_id': t.category.id,
             'category_color': t.category.color,
-            'is_done': t.is_done,
+            'is_done': t.done_at is not None,
             'is_overdue': t.is_overdue,
         })
 
@@ -95,6 +95,7 @@ def create_task(request):
                 category=category,
                 due_date=due_date,
                 user=request.user
+
             )
             messages.success(request, 'Завдання успішно створено!')
         except Exception as e:
@@ -112,10 +113,15 @@ def edit_task(request):
         task = get_object_or_404(Task, id=task_id, user=request.user)
 
         if action == "done":
-            task.is_done = True
             task.is_archived = True
+            task.done_at = timezone.now()
             task.save()
             messages.success(request, 'Завдання відмічено як виконане!')
+            return redirect('main')
+
+        if action == "delete":
+            task.delete()
+            messages.success(request, 'Завдання успішно видалено!')
             return redirect('main')
 
         title = request.POST.get("title")
@@ -200,7 +206,35 @@ def reorder_categories(request):
 
 @login_required
 def archive(request):
-    return render(request, 'boards/archive.html', {'title': 'Архів'})
+    categories = request.user.categories.annotate(
+        task_count=Count('tasks', filter=Q(tasks__is_archived=True))
+    ).order_by('order')
+    tasks = request.user.tasks.filter(is_archived=True).order_by('-priority')
+
+    tasks_archive_list = []
+    pri_map = {1: 'low', 2: 'med', 3: 'high'}
+
+    for t in tasks:
+        tasks_archive_list.append({
+            'id': t.id,
+            'title': t.title,
+            'description': t.description,
+            'date': t.due_date.strftime('%Y-%m-%d') if t.due_date else None,
+            'priority': pri_map.get(t.priority, 'med'),
+            'category_name': t.category.name,
+            'category_id': t.category.id,
+            'category_color': t.category.color,
+            'completed_at': t.done_at.strftime('%Y-%m-%dT%H:%M:%SZ') if t.done_at else None,
+            'is_done': bool(t.done_at),
+            'is_archived': t.is_archived,
+        })
+
+    context = {
+        'title': 'Архів',
+        'categories': categories,
+        'tasks_json': tasks_archive_list,
+    }
+    return render(request, 'boards/archive.html', context)
 
 
 @login_required

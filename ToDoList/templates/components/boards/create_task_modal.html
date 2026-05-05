@@ -38,15 +38,17 @@
                     <div class="task-field">
                         <label class="task-label">Категорія</label>
                         <div class="task-categories">
+                            {% if form_categories %}
                             {% for category in form_categories %}
                             <label class="task-cat-option">
-                                <!-- ТУТ ДОДАНО checked ДЛЯ ПЕРШОГО ЕЛЕМЕНТА -->
                                 <input type="radio" name="category" value="{{ category.id }}" hidden required {% if forloop.first %}checked{% endif %}/>
-
                                 <span class="task-cat-dot" style="background: {{ category.color }};"></span>
                                 {{ category.name }}
                             </label>
                             {% endfor %}
+                            {% else %}
+                            <span class="task-no-categories">Для створення завдання створіть категорію</span>
+                            {% endif %}
                         </div>
                     </div>
 
@@ -66,8 +68,6 @@
                         </div>
                     </div>
 
-                    <!-- Дедлайн -->
-                    <!-- Дедлайн -->
                     <div class="task-field">
                         <label class="task-label">Дедлайн</label>
                         <input type="date" name="due_date" class="task-input task-input-date"
@@ -85,3 +85,4 @@
         </div>
     </div>
 </div>
+

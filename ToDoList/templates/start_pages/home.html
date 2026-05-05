@@ -2,8 +2,6 @@
 
 {% load static %}
 
-
-
 {% block content %}
 <section class="hero">
     <div class="container">
@@ -32,85 +30,129 @@
             </div>
 
             <div class="col-lg-6 fade-up delay-2">
-                <div class="mockup-wrap">
-
-                    <div class="mockup-badge mockup-badge-tl d-none d-md-flex">
-                        <span style="color:#10b981;font-size:1.1rem;">✓</span>
-                        <span>Завдання виконано!</span>
-                    </div>
-                    <div class="mockup-badge mockup-badge-br d-none d-md-flex">
-                        <i class="bi bi-lightning-charge-fill" style="color:#f59e0b;"></i>
-                        <span>3 дедлайни сьогодні</span>
-                    </div>
-
-                    <div class="mockup-card">
-                        <div class="mockup-topbar">
-                            <div class="mockup-dot" style="background:#ef4444;"></div>
-                            <div class="mockup-dot" style="background:#f59e0b;"></div>
-                            <div class="mockup-dot" style="background:#10b981;"></div>
-                            <span style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-left:auto;font-family:'Syne',sans-serif;">Flōw — Навчальний семестр</span>
+                <div class="mockup-body">
+                    <!-- Заголовок тижня -->
+                    <div class="mk-week-header">
+                        <div class="mk-week-nav">
+                            <div class="mk-nav-btn">&#8249;</div>
+                            <span class="mk-week-label">4–10 травня 2026</span>
+                            <div class="mk-nav-btn">&#8250;</div>
                         </div>
-                        <div class="mockup-body">
-                            <div class="row g-2">
+                    </div>
 
-                                <div class="col-4">
-                                    <div class="kanban-col">
-                                        <div class="kanban-col-title">Зробити</div>
-                                        <div class="kanban-task">
-                                            <div class="kanban-task-tag tag-purple">Дизайн</div>
-                                            <br>
-                                            Презентація проєкту
-                                            <div class="kanban-task-due"><i class="bi bi-calendar3"></i> 18 Квіт</div>
-                                        </div>
-                                        <div class="kanban-task">
-                                            <div class="kanban-task-tag tag-amber">Реферат</div>
-                                            <br>
-                                            Зібрати джерела
-                                            <div class="kanban-task-due"><i class="bi bi-calendar3"></i> 22 Квіт</div>
-                                        </div>
-                                    </div>
+                    <!-- Сітка днів -->
+                    <div class="mk-grid">
+
+                        <div class="mk-day">
+                            <div class="mk-day-head">
+                                <span class="mk-day-name">ПН</span>
+                                <span class="mk-day-num mk-today">4 <span class="mk-dot"></span></span>
+                            </div>
+                            <div class="mk-task">
+                                <div class="mk-task-title">Лаба з фізики</div>
+                                <div class="mk-task-meta">
+                                    <span class="mk-pri mk-high">високий</span>
                                 </div>
-
-                                <div class="col-4">
-                                    <div class="kanban-col"
-                                         style="border:1.5px solid rgba(34, 211, 238, 0.4);background:rgba(34, 211, 238, 0.05);">
-                                        <div class="kanban-col-title" style="color:var(--brand-accent2);">В процесі
-                                        </div>
-                                        <div class="kanban-task">
-                                            <div class="kanban-task-tag tag-blue">Код</div>
-                                            <br>
-                                            Лабораторна з БД
-                                            <div class="kanban-task-due" style="color:var(--brand-accent2);"><i
-                                                    class="bi bi-fire"></i> Сьогодні
-                                            </div>
-                                        </div>
-                                        <div class="kanban-task">
-                                            <div class="kanban-task-tag tag-green">Текст</div>
-                                            <br>
-                                            Вступ до курсової
-                                        </div>
-                                    </div>
+                            </div>
+                            <div class="mk-task">
+                                <div class="mk-task-title">Купити конспекти</div>
+                                <div class="mk-task-meta">
+                                    <span class="mk-pri mk-low">низький</span>
                                 </div>
-
-                                <div class="col-4">
-                                    <div class="kanban-col">
-                                        <div class="kanban-col-title" style="color:#10b981;">Готово</div>
-                                        <div class="kanban-task" style="opacity:0.5;text-decoration:line-through;">
-                                            Семінар з історії
-                                        </div>
-                                        <div class="kanban-task" style="opacity:0.5;text-decoration:line-through;">
-                                            Оплата гуртожитку
-                                        </div>
-                                        <div class="kanban-task" style="opacity:0.5;text-decoration:line-through;">
-                                            Тест з англійської
-                                        </div>
-                                    </div>
-                                </div>
-
                             </div>
                         </div>
-                    </div>
 
+                        <div class="mk-day">
+                            <div class="mk-day-head">
+                                <span class="mk-day-name">ВТ</span>
+                                <span class="mk-day-num">5</span>
+                            </div>
+                            <div class="mk-task">
+                                <div class="mk-task-title">Реферат з історії</div>
+                                <div class="mk-task-meta">
+                                    <span class="mk-pri mk-med">середній</span>
+                                </div>
+                            </div>
+                            <div class="mk-task">
+                                <div class="mk-task-title">Здати завдання</div>
+                                <div class="mk-task-meta">
+                                    <span class="mk-pri mk-low">низький</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mk-day">
+                            <div class="mk-day-head">
+                                <span class="mk-day-name">СР</span>
+                                <span class="mk-day-num">6</span>
+                            </div>
+                            <div class="mk-task mk-overdue">
+                                <div class="mk-task-title">Курсова робота</div>
+                                <div class="mk-task-meta">
+                                    <span class="mk-pri mk-high">високий</span>
+                                </div>
+                            </div>
+                            <div class="mk-task">
+                                <div class="mk-task-title">Зустріч старост</div>
+                                <div class="mk-task-meta">
+                                    <span class="mk-pri mk-med">середній</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mk-day">
+                            <div class="mk-day-head">
+                                <span class="mk-day-name">ЧТ</span>
+                                <span class="mk-day-num">7</span>
+                            </div>
+                            <div class="mk-task">
+                                <div class="mk-task-title">Підготовка до семінару</div>
+                                <div class="mk-task-meta">
+                                    <span class="mk-pri mk-high">високий</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mk-day">
+                            <div class="mk-day-head">
+                                <span class="mk-day-name">ПТ</span>
+                                <span class="mk-day-num">8</span>
+                            </div>
+                            <div class="mk-task">
+                                <div class="mk-task-title">Презентація проєкту</div>
+                                <div class="mk-task-meta">
+                                    <span class="mk-pri mk-high">високий</span>
+                                </div>
+                            </div>
+                            <div class="mk-task">
+                                <div class="mk-task-title">Спортзал</div>
+                                <div class="mk-task-meta">
+                                    <span class="mk-pri mk-low">низький</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mk-day mk-weekend">
+                            <div class="mk-day-head">
+                                <span class="mk-day-name">СБ</span>
+                                <span class="mk-day-num">9</span>
+                            </div>
+                            <div class="mk-task">
+                                <div class="mk-task-title">Англійська мова</div>
+                                <div class="mk-task-meta">
+                                    <span class="mk-pri mk-med">середній</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mk-day mk-weekend">
+                            <div class="mk-day-head">
+                                <span class="mk-day-name">НД</span>
+                                <span class="mk-day-num">10</span>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
 

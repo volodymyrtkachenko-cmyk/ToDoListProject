@@ -4,28 +4,22 @@
 {% block page_css %}
 <link href="{% static 'boards/css/pages/board.css' %}" rel="stylesheet">
 <style>
-    /* Приховуємо кнопку "Додати" внизу кожної колонки */
     .day-add-btn {
         display: none !important;
     }
 
-    /* Приховуємо напис "+ додати" в порожніх днях */
     .day-empty {
         display: none !important;
     }
 
-    /* Вимикаємо курсор-вказівник та події кліку на колонках,
-       щоб випадково не відкрити створення */
     .day-tasks {
         pointer-events: none;
     }
 
-    /* Але дозволяємо клікати на самі картки задач, щоб їх можна було переглянути */
     .task-card {
         pointer-events: auto;
     }
 
-    /* Візуальне маркування архіву (опціонально) */
     .board-header {
         border-bottom: 2px solid var(--danger);
     }
@@ -54,8 +48,12 @@
     </div>
     <div class="board-grid" id="boardGrid"></div>
 </div>
+
+{% include 'components/boards/archive_task_modal.html' %}
 {% endblock %}
 
+
 {% block page_js %}
-<script src="{% static 'boards/js/pages/board.js' %}"></script>
+{{ tasks_json|json_script:"tasks-data" }}
+<script src="{% static 'boards/js/pages/archive.js' %}"></script>
 {% endblock %}

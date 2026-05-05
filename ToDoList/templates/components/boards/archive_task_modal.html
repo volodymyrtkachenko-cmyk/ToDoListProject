@@ -1,0 +1,52 @@
+<div class="modal fade" id="archiveViewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content flo-modal">
+
+            <div class="flo-modal-header">
+                <h5 class="flo-modal-title">Завдання</h5>
+                <button type="button" class="flo-close-btn" data-bs-dismiss="modal" aria-label="Закрити">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 1l12 12M13 1L1 13"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-body p-4">
+
+                <div class="flo-preview d-flex justify-content-between align-items-center mb-4">
+                    <div class="d-flex align-items-center gap-3">
+                        <span id="view-preview-dot"
+                              style="width: 10px; height: 10px; border-radius: 50%; display: inline-block;"></span>
+                        <span id="view-task-cat"
+                              style="font-weight: 700; color: #f4f4f5; font-size: 1rem;"></span>
+                    </div>
+                    <span id="view-task-pri"
+                          style="background: rgba(239,68,68,0.1); padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;"></span>
+                </div>
+
+                <div class="mb-4">
+                    <span class="flo-label">Назва</span>
+                    <div class="flo-input" id="view-task-title"
+                         style="min-height: unset; cursor: default;"></div>
+                </div>
+
+                <div class="mb-4">
+                    <span class="flo-label">Опис</span>
+                    <div class="flo-input" id="view-task-desc"
+                         style="min-height: 80px; cursor: default; color: #a1a1aa; white-space: pre-wrap;"></div>
+                </div>
+
+                <div class="mb-2">
+                    <span class="flo-label">Виконано:</span>
+                    <div class="flo-input" id="view-task-date"
+                         style="min-height: unset; cursor: default; color: #a1a1aa;"></div>
+                </div>
+
+                <div class="flo-actions" style="justify-content: flex-end; margin-top: 24px;">
+                    <button type="button" class="flo-btn-cancel" data-bs-dismiss="modal">Закрити</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,11 +1,8 @@
-from os import name
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
-
+from django.utils import timezone
 
 
 class Category(models.Model):
@@ -59,19 +56,18 @@ class Task(models.Model):
     description = models.TextField(blank=True, verbose_name='опис')
     priority = models.IntegerField(choices=Priority.choices, default=Priority.MEDIUM)
     order = models.PositiveIntegerField(default=0)
-    is_done = models.BooleanField(default=False)
     is_archived = models.BooleanField(default=False)
     due_date = models.DateField(null=True, blank=True, verbose_name='дедлайн')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    done_at = models.DateTimeField(null=True, blank=True, verbose_name='виконано')
 
     def __str__(self):
         return self.title
 
     @property
     def is_overdue(self):
-        from django.utils import timezone
-        return self.due_date and not self.is_done and self.due_date < timezone.now().date()
+        return self.due_date and self.done_at is None and self.due_date < timezone.now().date()
 
     class Meta:
         verbose_name = 'завдання'

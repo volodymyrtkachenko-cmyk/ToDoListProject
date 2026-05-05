@@ -71,8 +71,7 @@
             {% endif %}
 
             <div class="user-info-sm">
-                <div class="user-name-sm">{{ user.username }}</div>
-                <div class="user-role-sm">Особистий акаунт</div>
+                <div class="user-name-sm">{{ user.username|truncatechars:15 }}</div>
             </div>
         </div>
 

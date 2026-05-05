@@ -26,6 +26,7 @@
 
         <div class="sb-sec-row mt-3 mb-2">
             <span class="sb-lbl">Категорії</span>
+            {% if not request.path == '/boards/archive/' %}
             <button class="ib" type="button" data-bs-toggle="modal" data-bs-target="#createCategoryModal"
                     aria-label="Відкрити категорії">
                 <svg viewBox="0 0 12 12" width="12" height="12">
@@ -33,6 +34,7 @@
                     <line x1="1" y1="6" x2="11" y2="6" stroke="currentColor" stroke-width="2"/>
                 </svg>
             </button>
+            {% endif %}
         </div>
 
         {% for category in categories %}
@@ -48,7 +50,7 @@
                 {% endif %}
             </span>
 
-            {% if not category.is_default %}
+            {% if not category.is_default and request.path != '/boards/archive/' %}
             <form method="POST" action="{% url 'delete_category' category.pk %}"
                   onsubmit="return confirm('Видалити категорію «{{ category.name }}»?')">
                 {% csrf_token %}
@@ -133,7 +135,6 @@
 
             <div class="user-info">
                 <div class="user-name">{{ user.username|truncatechars:15 }}</div>
-                <div class="user-sub">Особистий акаунт</div>
             </div>
 
             <button class="set-btn" id="setBtn" aria-label="Налаштування">

@@ -240,6 +240,7 @@ function openEditModal(taskId) {
 
     // 1. Заповнюємо базові поля
     document.getElementById('edit-task-id').value = task.id;
+    document.getElementById('delete-task-id').value = task.id; 
     document.getElementById('edit-task-title').value = task.title;
     document.getElementById('edit-task-desc').value = task.description || '';
 
