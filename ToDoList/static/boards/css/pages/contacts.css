@@ -139,3 +139,216 @@ textarea.form-control {
     transform: translateY(0);
     box-shadow: none;
 }
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ct-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(24px, 5vw, 64px) clamp(16px, 4vw, 48px);
+}
+
+.ct-inner {
+    width: 100%;
+    max-width: 780px;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(20px, 3vw, 32px);
+}
+
+.ct-hero {
+    text-align: center;
+    animation: fadeUp .5s ease-out forwards;
+}
+
+.ct-title {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    color: #f0f0f0;
+    margin: 0 0 .5rem;
+    line-height: 1.15;
+}
+
+.ct-subtitle {
+    color: #94a3b8;
+    font-size: clamp(.85rem, 2vw, .95rem);
+    margin: 0;
+    line-height: 1.6;
+}
+
+.ct-alerts {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    animation: fadeUp .4s ease-out forwards;
+}
+
+.ct-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: .7rem 1rem;
+    border-radius: 10px;
+    font-size: .875rem;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.ct-alert svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.ct-alert--success {
+    background: rgba(34, 197, 94, .1);
+    border: 1px solid rgba(34, 197, 94, .28);
+    color: #4ade80;
+}
+
+.ct-alert--error {
+    background: rgba(239, 68, 68, .1);
+    border: 1px solid rgba(239, 68, 68, .28);
+    color: #f87171;
+}
+
+.ct-alert--warning {
+    background: rgba(234, 179, 8, .1);
+    border: 1px solid rgba(234, 179, 8, .28);
+    color: #facc15;
+}
+
+.ct-card {
+    background: #1e2235;
+    border: 1px solid #2a2f4c;
+    border-radius: clamp(12px, 2vw, 18px);
+    padding: clamp(20px, 4vw, 40px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .25);
+    animation: fadeUp .5s ease-out .15s both;
+}
+
+.ct-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: clamp(18px, 3vw, 28px);
+}
+
+.ct-card-title {
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    font-weight: 700;
+    color: #fff;
+}
+
+.ct-login-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: .8rem;
+    color: #8b5cf6;
+    text-decoration: none;
+    opacity: .85;
+    transition: opacity .2s;
+}
+
+.ct-login-hint:hover {
+    opacity: 1;
+}
+
+.ct-form {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(14px, 2.5vw, 20px);
+}
+
+.ct-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(12px, 2vw, 20px);
+}
+
+@media (max-width: 540px) {
+    .ct-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.ct-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ct-label {
+    font-size: .8rem;
+    font-weight: 600;
+    color: #94a3b8;
+    letter-spacing: .02em;
+}
+
+.ct-input {
+    background: rgba(0, 0, 0, .25);
+    border: 1px solid rgba(255, 255, 255, .1);
+    color: #f8fafc;
+    padding: clamp(9px, 1.5vw, 12px) clamp(12px, 2vw, 16px);
+    border-radius: 10px;
+    font-size: clamp(.85rem, 1.8vw, .95rem);
+    outline: none;
+    width: 100%;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+}
+
+.ct-input::placeholder {
+    color: #475569;
+}
+
+.ct-input:focus {
+    background: rgba(0, 0, 0, .4);
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, .18);
+    color: #fff;
+}
+
+.ct-textarea {
+    resize: vertical;
+    min-height: clamp(90px, 15vw, 120px);
+    line-height: 1.6;
+}
+
+.ct-submit {
+    background: #8b5cf6;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: clamp(.88rem, 2vw, 1rem);
+    padding: clamp(11px, 2vw, 14px) 2rem;
+    width: 100%;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: background .2s, transform .15s, box-shadow .2s;
+}
+
+.ct-submit:hover {
+    background: #7c3aed;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(139, 92, 246, .3);
+}
+
+.ct-submit:active {
+    transform: translateY(0);
+    box-shadow: none;
+}

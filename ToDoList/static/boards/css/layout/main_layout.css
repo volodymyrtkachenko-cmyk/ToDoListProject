@@ -593,7 +593,6 @@ html, body {
 
 /* dropdown */
 .set-dd {
-    display: none;
     position: absolute;
     bottom: calc(100% + 6px);
     left: 10px;
@@ -1368,3 +1367,38 @@ textarea.flo-input {
     mask-size: contain;
 }
 
+.cal-d.active {
+    background-color: #007bff; /* Цвет выделения (подбери под дизайн) */
+    color: #ffffff;
+    border-radius: 5px; /* Или 50% для круглого выделения */
+}
+
+/* Стилізація кнопки профілю */
+.btn-profile {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px; /* Відстань між іконкою та текстом */
+    padding: 8px 20px;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); /* Гарний фіолетово-синій градієнт */
+    color: #ffffff !important; /* Білий текст */
+    border-radius: 25px; /* Округлі краєчки */
+    text-decoration: none; /* Прибираємо підкреслення від тега <a> */
+    font-weight: 500;
+    font-size: 15px;
+    transition: all 0.3s ease; /* Плавність анімації */
+    box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3); /* Легка тінь */
+    border: none;
+}
+
+/* Ефект при наведенні мишки */
+.btn-profile:hover {
+    transform: translateY(-2px); /* Кнопка трохи піднімається */
+    box-shadow: 0 6px 15px rgba(139, 92, 246, 0.4); /* Тінь стає більшою */
+    color: #ffffff;
+}
+
+/* Налаштування розміру іконки */
+.btn-profile .profile-icon {
+    width: 18px;
+    height: 18px;
+}

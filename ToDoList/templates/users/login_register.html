@@ -5,75 +5,129 @@
 <link rel="stylesheet" href="{% static 'start_pages/css/start_pages_login_register.css' %}">
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+    /* Плавна анімація появи */
+    .auth-message {
+        animation: msg-enter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        transform-origin: top center;
+        overflow: hidden;
+    }
+
+    @keyframes msg-enter {
+        0% {
+            opacity: 0;
+            transform: translateY(-15px) scale(0.95);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    /* Клас, який JavaScript додає для плавного зникнення */
+    .auth-message-hide {
+        opacity: 0 !important;
+        transform: translateY(-10px) scale(0.95) !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        height: 0 !important;
+    }
+</style>
 {% endblock %}
 
 {% block layout %}
 <div class="min-h-screen flex items-center justify-center p-4">
     <div class="fade-in w-full max-w-xl bg-[#0C0C0E] border border-[#1F1F23] shadow-[0_0_80px_-20px_rgba(255,255,255,0.05)] overflow-hidden rounded-sm">
         <div class="p-8 md:p-14 flex flex-col justify-center">
+
             <div class="mb-12">
                 <h1 class="serif text-3xl tracking-tight text-stone-200 mb-1">Flow.</h1>
                 <p class="text-stone-500 text-xs uppercase tracking-[0.2em] font-semibold">Minimalist productivity</p>
             </div>
 
-
             {% if mode == 'register' %}
             <form action="{% url 'register' %}" method="POST" id="auth-form" class="space-y-5">
                 <div id="auth-header">
                     <h2 id="form-title" class="text-xl font-light mb-1 text-stone-100">Готові починати?</h2>
-                    <p id="form-subtitle" class="text-stone-500 text-xs mb-8">Введіть дані для реєстрації</p>
+                    <p id="form-subtitle" class="text-stone-500 text-xs mb-6">Введіть дані для реєстрації</p>
                 </div>
+
                 {% csrf_token %}
+
+                <!-- --- ПОВІДОМЛЕННЯ (РЕЄСТРАЦІЯ) --- -->
                 {% if error %}
-                <div style="color: red; margin-bottom: 15px; font-weight: bold;">
-                    {{ error }}
+                <div class="auth-message flex items-center justify-center px-5 py-4 rounded-2xl bg-red-500/10 text-red-500 shadow-[0_8px_30px_-4px_rgba(239,68,68,0.2)] text-center">
+                    <svg class="w-[18px] h-[18px] shrink-0 mr-2 opacity-90 mt-[1px]" fill="none" stroke="currentColor"
+                         viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span class="text-sm font-medium leading-none">{{ error }}</span>
                 </div>
                 {% endif %}
-                <!-- Username Field (Приховано за замовчуванням) -->
+
+                {% if messages %}
+                {% for message in messages %}
+                <div class="auth-message flex items-center justify-center px-5 py-4 rounded-2xl text-center transition-all
+                        {% if message.tags == 'error' %}
+                            bg-red-500/10 text-red-500 shadow-[0_8px_30px_-4px_rgba(239,68,68,0.2)]
+                        {% else %}
+                            bg-emerald-500/10 text-emerald-400 shadow-[0_8px_30px_-4px_rgba(16,185,129,0.2)]
+                        {% endif %}">
+
+                    {% if message.tags == 'error' %}
+                    <svg class="w-[18px] h-[18px] shrink-0 mr-2 opacity-90 mt-[1px]" fill="none" stroke="currentColor"
+                         viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    {% else %}
+                    <svg class="w-[18px] h-[18px] shrink-0 mr-2 opacity-90 mt-[1px]" fill="none" stroke="currentColor"
+                         viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    {% endif %}
+
+                    <span class="text-sm font-medium leading-none">{{ message }}</span>
+                </div>
+                {% endfor %}
+                {% endif %}
+                <!-- --- КІНЕЦЬ ПОВІДОМЛЕНЬ --- -->
+
                 <div id="username-group" class="space-y-2">
                     <label class="block text-[10px] uppercase tracking-wider text-stone-500 font-bold">Ім'я
                         користувача</label>
-                    <input
-                            type="text"
-                            name="username"
-                            placeholder="імʼя"
-                            class="w-full px-4 py-3 bg-[#121214] border border-[#27272A] rounded-md text-stone-100 text-sm focus:border-stone-400 outline-none transition-colors"
-                    >
+                    <input type="text" name="username" placeholder="імʼя" value="{{ username_val|default:'' }}"
+                           class="w-full px-4 py-3 bg-[#121214] border border-[#27272A] rounded-md text-stone-100 text-sm focus:border-stone-400 outline-none transition-colors">
                 </div>
 
                 <div class="space-y-2">
                     <label class="block text-[10px] uppercase tracking-wider text-stone-500 font-bold">Пошта</label>
-                    <input
-                            type="email"
-                            name="email"
-                            placeholder="name@example.co"
-                            required
-                            class="w-full px-4 py-3 bg-[#121214] border border-[#27272A] rounded-md text-stone-100 text-sm focus:border-stone-400 outline-none transition-colors"
-                    >
-                </div>
-                <div class="space-y-2">
-                    <label class="block text-[10px] uppercase tracking-wider text-stone-500 font-bold">Пароль</label>
-                    <input
-                            type="password"
-                            name="password"
-                            placeholder="••••••••"
-                            required
-                            class="w-full px-4 py-3 bg-[#121214] border border-[#27272A] rounded-md text-stone-100 text-sm focus:border-stone-400 outline-none transition-colors"
-                    >
+                    <input type="email" name="email" placeholder="name@example.co" required
+                           value="{{ email_val|default:'' }}"
+                           class="w-full px-4 py-3 bg-[#121214] border border-[#27272A] rounded-md text-stone-100 text-sm focus:border-stone-400 outline-none transition-colors">
                 </div>
 
-                <button
-                        type="submit"
-                        id="submit-btn"
-                        class="w-full py-3 bg-stone-200 text-black font-semibold rounded-md text-sm hover:bg-white transition-colors mt-4 cursor-pointer"
-                >
+                <div class="space-y-2">
+                    <label class="block text-[10px] uppercase tracking-wider text-stone-500 font-bold">Пароль</label>
+                    <input type="password" name="password" placeholder="••••••••" required
+                           class="w-full px-4 py-3 bg-[#121214] border border-[#27272A] rounded-md text-stone-100 text-sm focus:border-stone-400 outline-none transition-colors">
+                </div>
+
+                <button type="submit" id="submit-btn"
+                        class="w-full py-3 bg-stone-200 text-black font-semibold rounded-md text-sm hover:bg-white transition-colors mt-4 cursor-pointer">
                     Зареєструватися
                 </button>
             </form>
+
             <div class="mt-8 text-center pt-6 border-t border-[#1F1F23]">
                 <p class="text-xs text-stone-500">
                     <span id="toggle-text">Вже маєте аккаунт?</span>
-                    <!-- Додано стилі для посилання: світліший текст, підкреслення та білий колір при наведенні, відступ зліва -->
                     <a href="{% url 'login' %}"
                        class="text-stone-200 hover:text-white hover:underline transition-colors font-medium ml-1">Увійти</a>
                 </p>
@@ -82,60 +136,94 @@
             {% elif mode == 'login' %}
             <form action="{% url 'login' %}" method="POST" id="auth-form" class="space-y-5">
                 <div id="auth-header">
-                    <h2 id="form-title" class="text-xl font-light mb-1 text-stone-100">З поверненням?</h2>
-                    <p id="form-subtitle" class="text-stone-500 text-xs mb-8">Введіть дані для входу</p>
+                    <h2 id="form-title" class="text-xl font-light mb-1 text-stone-100">З поверненням</h2>
+                    <p id="form-subtitle" class="text-stone-500 text-xs mb-6">Введіть дані для входу</p>
                 </div>
 
                 {% csrf_token %}
 
+                <!-- --- ПОВІДОМЛЕННЯ (ЛОГІН) --- -->
                 {% if error %}
-                <!-- Замінено інлайн-стилі на класи для збереження єдиного стилю коду -->
-                <div class="text-red-500 text-sm font-semibold mb-4">
-                    {{ error }}
+                <div class="auth-message flex items-center justify-center px-5 py-4 rounded-2xl bg-red-500/10 text-red-500 shadow-[0_8px_30px_-4px_rgba(239,68,68,0.2)] text-center">
+                    <svg class="w-[18px] h-[18px] shrink-0 mr-2 opacity-90 mt-[1px]" fill="none" stroke="currentColor"
+                         viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span class="text-sm font-medium leading-none">{{ error }}</span>
                 </div>
                 {% endif %}
 
+                {% if success %}
+                <div class="auth-message flex items-center justify-center px-5 py-4 rounded-2xl bg-emerald-500/10 text-emerald-400 shadow-[0_8px_30px_-4px_rgba(16,185,129,0.2)] text-center">
+                    <svg class="w-[18px] h-[18px] shrink-0 mr-2 opacity-90 mt-[1px]" fill="none" stroke="currentColor"
+                         viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="text-sm font-medium leading-none">{{ success }}</span>
+                </div>
+                {% endif %}
+
+                {% if messages %}
+                {% for message in messages %}
+                <div class="auth-message flex items-center justify-center px-5 py-4 rounded-2xl text-center transition-all
+                        {% if message.tags == 'error' %}
+                            bg-red-500/10 text-red-500 shadow-[0_8px_30px_-4px_rgba(239,68,68,0.2)]
+                        {% else %}
+                            bg-emerald-500/10 text-emerald-400 shadow-[0_8px_30px_-4px_rgba(16,185,129,0.2)]
+                        {% endif %}">
+
+                    {% if message.tags == 'error' %}
+                    <svg class="w-[18px] h-[18px] shrink-0 mr-2 opacity-90 mt-[1px]" fill="none" stroke="currentColor"
+                         viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    {% else %}
+                    <svg class="w-[18px] h-[18px] shrink-0 mr-2 opacity-90 mt-[1px]" fill="none" stroke="currentColor"
+                         viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    {% endif %}
+
+                    <span class="text-sm font-medium leading-none">{{ message }}</span>
+                </div>
+                {% endfor %}
+                {% endif %}
+                <!-- --- КІНЕЦЬ ПОВІДОМЛЕНЬ --- -->
+
                 <div class="space-y-2">
                     <label class="block text-[10px] uppercase tracking-wider text-stone-500 font-bold">Пошта</label>
-                    <input
-                            type="email"
-                            name="email"
-                            placeholder="name@example.co"
-                            required
-                            class="w-full px-4 py-3 bg-[#121214] border border-[#27272A] rounded-md text-stone-100 text-sm focus:border-stone-400 outline-none transition-colors"
-                    >
+                    <input type="email" name="email" placeholder="name@example.co" required
+                           value="{{ email_val|default:'' }}"
+                           class="w-full px-4 py-3 bg-[#121214] border border-[#27272A] rounded-md text-stone-100 text-sm focus:border-stone-400 outline-none transition-colors">
                 </div>
 
                 <div class="space-y-2">
                     <label class="block text-[10px] uppercase tracking-wider text-stone-500 font-bold">Пароль</label>
-                    <input
-                            type="password"
-                            name="password"
-                            placeholder="••••••••"
-                            required
-                            class="w-full px-4 py-3 bg-[#121214] border border-[#27272A] rounded-md text-stone-100 text-sm focus:border-stone-400 outline-none transition-colors"
-                    >
+                    <input type="password" name="password" placeholder="••••••••" required
+                           class="w-full px-4 py-3 bg-[#121214] border border-[#27272A] rounded-md text-stone-100 text-sm focus:border-stone-400 outline-none transition-colors">
                 </div>
 
-                <button
-                        type="submit"
-                        id="submit-btn"
-                        class="w-full py-3 bg-stone-200 text-black font-semibold rounded-md text-sm hover:bg-white transition-colors mt-4 cursor-pointer"
-                >
+                <button type="submit" id="submit-btn"
+                        class="w-full py-3 bg-stone-200 text-black font-semibold rounded-md text-sm hover:bg-white transition-colors mt-4 cursor-pointer">
                     Увійти
                 </button>
 
                 <div class="mt-8 text-center pt-6 border-t border-[#1F1F23]">
                     <p class="text-xs text-stone-500">
                         <span id="toggle-text">Не маєте аккаунта?</span>
-                        <!-- Додано аналогічні стилі для посилання реєстрації -->
                         <a href="{% url 'register' %}"
                            class="text-stone-200 hover:text-white hover:underline transition-colors font-medium ml-1">Зареєструватися</a>
                     </p>
                 </div>
             </form>
             {% endif %}
-                
+
         </div>
     </div>
 </div>
@@ -144,12 +232,39 @@
 {% block extra_js %}
 <script>
     let isLogin = "{{ mode|default:'login' }}" === 'login';
+    const authForm = document.getElementById('auth-form');
 
-    if (isLogin) {
-        authForm.action = "{% url 'login' %}";
-    } else {
-        authForm.action = "{% url 'register' %}";
+    if (authForm) {
+        if (isLogin) {
+            authForm.action = "{% url 'login' %}";
+        } else {
+            authForm.action = "{% url 'register' %}";
+        }
     }
+
+    // Ідеально плавне зникнення повідомлень через 5 секунд
+    document.addEventListener('DOMContentLoaded', () => {
+        const messages = document.querySelectorAll('.auth-message');
+
+        messages.forEach(msg => {
+            // Фіксуємо початкову висоту для плавного "схлопування"
+            const height = msg.offsetHeight;
+            msg.style.height = height + 'px';
+
+            // Налаштовуємо CSS транзиції для виходу
+            msg.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+
+            setTimeout(() => {
+                // Додаємо клас, який зводить opacity, padding, margin і height до нуля
+                msg.classList.add('auth-message-hide');
+
+                // Видаляємо елемент з DOM після завершення анімації (500мс)
+                setTimeout(() => {
+                    msg.remove();
+                }, 500);
+            }, 5000); // 5 секунд затримки
+        });
+    });
 </script>
 <script src="{% static 'start_pages/js/start_pages_login_register.js' %}"></script>
 {% endblock %}

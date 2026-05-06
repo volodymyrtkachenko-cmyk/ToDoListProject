@@ -1,5 +1,5 @@
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.utils import timezone
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
@@ -29,12 +29,34 @@ def main(request):
     ).order_by('order')
     available_colors = get_available_colors(request.user)
     form_categories = categories.filter(is_default=False)
+
+    # 1. Беремо лише АКТИВНІ завдання для списку на головній
     tasks = request.user.tasks.filter(is_archived=False).order_by('-priority')
+
+    # --- Визначаємо межі поточного тижня ---
+    today = timezone.localdate()
+    start_of_week = today - timedelta(days=today.weekday())
+    end_of_week = start_of_week + timedelta(days=6)
+
+    weekly_done = request.user.tasks.filter(
+        is_archived=True,
+        due_date__gte=start_of_week,
+        due_date__lte=end_of_week
+    ).count()
 
     tasks_list = []
     pri_map = {1: 'low', 2: 'med', 3: 'high'}
 
+    weekly_active = 0
+    overdue_total = 0
+
     for t in tasks:
+        if t.is_overdue:
+            overdue_total += 1
+
+        if t.due_date and start_of_week <= t.due_date <= end_of_week:
+            weekly_active += 1
+
         tasks_list.append({
             'id': t.id,
             'title': t.title,
@@ -48,12 +70,17 @@ def main(request):
             'is_overdue': t.is_overdue,
         })
 
+    weekly_total = weekly_active
+
     context = {
         'title': 'Головна',
         'categories': categories,
         'available_colors': available_colors,
         'form_categories': form_categories,
         'tasks_json': tasks_list,
+        'weekly_total': weekly_total,
+        'weekly_done': weekly_done,
+        'overdue_total': overdue_total,
     }
     return render(request, 'boards/main.html', context)
 
@@ -161,15 +188,6 @@ def edit_task(request):
         task.save()
         messages.success(request, 'Завдання успішно оновлено!')
 
-    return redirect('main')
-
-
-@login_required
-def delete_category(request, pk):
-    category = get_object_or_404(Category, pk=pk, user=request.user)
-    if request.method == 'POST':
-        category.delete()
-        messages.success(request, 'Категорію видалено')
     return redirect('main')
 
 
@@ -312,3 +330,39 @@ def contacts_boards(request):
 @login_required
 def about_boards(request):
     return render(request, 'boards/about.html', {'title': 'Про нас'})
+
+
+@login_required
+def edit_category(request, pk):
+    category = get_object_or_404(Category, pk=pk, user=request.user)
+    if request.method == "POST":
+        action = request.POST.get("action")
+        if action == "delete_category":
+            category.delete()
+            category.save()
+            messages.success(request, 'Категорія успішно видалена')
+            return redirect('main')
+        if action == "edit_category":
+            name = request.POST.get("name", "").strip()
+            color = request.POST.get("color", "").strip()
+
+            if name:
+                category.name = name
+            if color:
+                category.color = color
+        category.save()
+
+        messages.success(request, 'Категорію успішно оновлено')
+        return redirect('main')
+
+    return redirect('main')
+
+
+@login_required
+def delete_category(request, pk):
+    if request.method == "POST":
+        category = get_object_or_404(Category, pk=pk, user=request.user)
+        category.delete()
+        messages.success(request, 'Категорію успішно видалено!')
+        return redirect('main')
+    return redirect('main')

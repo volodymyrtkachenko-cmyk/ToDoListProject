@@ -24,19 +24,19 @@
                     <!-- Назва -->
                     <div class="task-field">
                         <label class="task-label">Назва</label>
+                        <!-- Прибрали oninput, перенесли в JS -->
                         <input type="text" name="name" id="categoryName" class="task-input"
-                               placeholder="Наприклад: Подорожі..." required autocomplete="off"
-                               oninput="updateCategoryPreview()"/>
+                               placeholder="Наприклад: Подорожі..." required autocomplete="off"/>
                     </div>
 
                     <div class="color-picker">
                         {% for color in available_colors %}
+                        <!-- Прибрали onclick -->
                         <button
                                 type="button"
                                 class="color-dot {% if forloop.first %}active{% endif %}"
                                 data-color="{{ color }}"
-                                style="background:{{ color }};"
-                                onclick="selectColor(this)">
+                                style="background:{{ color }};">
                         </button>
                         {% endfor %}
                     </div>
@@ -45,7 +45,7 @@
                     <div class="task-field">
                         <label class="task-label">Попередній перегляд</label>
                         <div class="category-preview">
-                            <span class="category-preview-dot" id="previewDot" style="background:#a78bfa;"></span>
+                            <span class="category-preview-dot" id="previewDot" style="background:{{ available_colors.0|default:'#a78bfa' }};"></span>
                             <span class="category-preview-name" id="previewName">Назва категорії</span>
                             <span class="category-preview-count">0</span>
                         </div>
@@ -65,17 +65,30 @@
 </div>
 
 <script>
-    function selectColor(el) {
-        document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
-        el.classList.add('active');
-        const color = el.dataset.color;
+    // 1. Обробка вибору кольору для модалки СТВОРЕННЯ
+    document.addEventListener('click', e => {
+        // Перевіряємо, чи клікнули на крапку саме в модалці створення
+        const dot = e.target.closest('#createCategoryModal .color-dot');
+        if (!dot) return;
+
+        // Знімаємо 'active' ТІЛЬКИ в межах цієї модалки (не чіпаємо редагування)
+        document.querySelectorAll('#createCategoryModal .color-dot').forEach(d => d.classList.remove('active'));
+
+        // Робимо активною ту, по якій клікнули
+        dot.classList.add('active');
+
+        // Оновлюємо дані
+        const color = dot.dataset.color;
         document.getElementById('selectedColor').value = color;
         document.getElementById('previewDot').style.background = color;
-    }
+    });
 
-    function updateCategoryPreview() {
-        const name = document.getElementById('categoryName').value.trim();
-        document.getElementById('previewName').textContent = name || 'Назва категорії';
+    // 2. Живе оновлення прев'ю назви
+    const nameInput = document.getElementById('categoryName');
+    if (nameInput) {
+        nameInput.addEventListener('input', function() {
+            const name = this.value.trim();
+            document.getElementById('previewName').textContent = name || 'Назва категорії';
+        });
     }
 </script>
-

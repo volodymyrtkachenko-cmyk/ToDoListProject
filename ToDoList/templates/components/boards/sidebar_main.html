@@ -43,27 +43,30 @@
             <span class="sb-cat__n">{{ category.name }}</span>
 
             <span class="badge-cnt">
-                {% if category.is_default %}
-                    {{ tasks_json|length }}
-                {% else %}
-                    {{ category.task_count|default:"0" }}
-                {% endif %}
-            </span>
+        {% if category.is_default %}
+            {{ tasks_json|length }}
+        {% else %}
+            {{ category.task_count|default:"0" }}
+        {% endif %}
+    </span>
 
             {% if not category.is_default and request.path != '/boards/archive/' %}
-            <form method="POST" action="{% url 'delete_category' category.pk %}"
-                  onsubmit="return confirm('Видалити категорію «{{ category.name }}»?')">
-                {% csrf_token %}
-                <button type="submit" class="sb-cat__delete">
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path d="M1 1L11 11M11 1L1 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                    </svg>
-                </button>
-            </form>
+            <button type="button" class="sb-cat__more"
+                    data-cat-id="{{ category.id }}"
+                    data-cat-name="{{ category.name }}"
+                    data-cat-color="{{ category.color }}"
+                    data-cat-url="{% url 'edit_category' category.pk %}"
+                    aria-label="Редагувати категорію">
+
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                    <circle cx="2" cy="6" r="1.2"/>
+                    <circle cx="6" cy="6" r="1.2"/>
+                    <circle cx="10" cy="6" r="1.2"/>
+                </svg>
+            </button>
             {% endif %}
         </div>
         {% endfor %}
-
 
     </div><!-- /scroll -->
 
@@ -158,28 +161,55 @@
         justify-content: center;
     }
 
-    .sb-cat__delete {
-        display: flex;
+    .sb-cat__more {
+        display: none;
         align-items: center;
         justify-content: center;
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
         background: rgba(255, 255, 255, 0.06);
         border: none;
         border-radius: 4px;
         color: #64748b;
         cursor: pointer;
         padding: 0;
-        transition: background 0.15s, color 0.15s;
         flex-shrink: 0;
+        transition: background 0.15s, color 0.15s;
     }
 
-    .sb-cat__delete:hover {
-        background: rgba(248, 113, 113, 0.15);
-        color: #f87171;
+    .sb-cat__more:hover {
+        background: rgba(255, 255, 255, 0.12);
+        color: #f4f4f5;
     }
 
-    .sb-cat:hover .sb-cat__delete {
+    .sb-cat:hover .sb-cat__more {
         display: flex;
+    }
+
+    /* --- АНІМАЦІЯ ДЛЯ МЕНЮ НАЛАШТУВАНЬ (set-dd) --- */
+
+    .set-dd {
+        /* Якщо в твоєму основному CSS є display: none для .set-dd,
+           обов'язково забери його! Ми ховаємо меню інакше: */
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none; /* Щоб меню не можна було клікнути, коли воно прозоре */
+
+        /* Зміщуємо меню на 10px вниз і трохи зменшуємо для ефекту появи */
+        transform: translateY(10px) scale(0.95);
+        transform-origin: bottom center; /* Точка, з якої починається анімація (знизу) */
+
+        /* Плавна анімація (cubic-bezier дає ефект м'якого "пригальмовування" в кінці) */
+        transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.25s;
+    }
+
+    /* Цей клас додається твоїм JavaScript при кліку (setMenu.classList.toggle('show')) */
+    .set-dd.show {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto; /* Повертаємо можливість клікати */
+
+        /* Повертаємо меню на його нормальне місце */
+        transform: translateY(0) scale(1);
     }
 </style>

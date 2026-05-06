@@ -1,0 +1,74 @@
+<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
+        <div class="modal-content task-modal">
+
+            <div class="task-modal-header">
+                <h5 class="task-modal-title">Редагувати категорію</h5>
+                <button type="button" class="task-modal-close" data-bs-dismiss="modal">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- ФОРМА 1: РЕДАГУВАННЯ (закінчується ДО футера) -->
+            <form method="POST" id="editCategoryForm" action="">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="edit_category">
+                <input type="hidden" name="color" id="editSelectedColor" value="">
+
+                <div class="task-modal-body">
+                    <div class="task-field">
+                        <label class="task-label">Назва</label>
+                        <input type="text" name="name" id="editCategoryName" class="task-input"
+                               placeholder="Наприклад: Подорожі..." required autocomplete="off"
+                               oninput="updateEditPreview()"/>
+                    </div>
+
+
+                    <div class="color-picker">
+                        {% for color in available_colors %}
+                        <button type="button" class="color-dot" data-color="{{ color }}"
+                                style="background:{{ color }};"></button>
+                        {% endfor %}
+                    </div>
+
+
+                    <div class="task-field">
+                        <label class="task-label">Попередній перегляд</label>
+                        <div class="category-preview">
+                            <span class="category-preview-dot" id="editPreviewDot"></span>
+                            <span class="category-preview-name" id="editPreviewName">Назва категорії</span>
+                            <span class="category-preview-count">0</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="task-modal-footer" style="justify-content: space-between;">
+
+                <form method="POST" action="" id="deleteCategoryForm" class="m-0">
+                    {% csrf_token %}
+                    <button type="submit" id="deleteCatBtn" class="task-btn-cancel"
+                            style="color:#ef4444; border-color:rgba(239,68,68,.25);"
+                            onclick="return confirm('Видалити категорію?')">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
+                            <polyline points="3 6 5 6 21 6"/>
+                            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                            <path d="M10 11v6M14 11v6M9 6V4h6v2"/>
+                        </svg>
+                        Видалити
+                    </button>
+                </form>
+
+                <div class="d-flex gap-2">
+                    <button type="button" class="task-btn-cancel" data-bs-dismiss="modal">Скасувати</button>
+                    <button type="submit" form="editCategoryForm" class="task-btn-create">Зберегти</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

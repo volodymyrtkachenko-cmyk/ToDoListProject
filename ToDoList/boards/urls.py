@@ -8,8 +8,9 @@ urlpatterns = [
     path('contact/', views.contacts_boards, name='contacts_boards'),
     path('about/', views.about_boards, name='about_boards'),
     path('create_category/', views.create_category, name='create_category'),
-    path('delete_category/<int:pk>', views.delete_category, name='delete_category'),
+    path('delete_category/<int:pk>/', views.delete_category, name='delete_category'),
     path('categories/reorder/', views.reorder_categories, name='reorder_categories'),
     path('create_task/', views.create_task, name='create_task'),
     path('edit-task/', views.edit_task, name='edit_task'),
+    path('edit_category/<int:pk>/', views.edit_category, name='edit_category'),
 ]

@@ -12,6 +12,8 @@ from django.utils.encoding import force_bytes, force_str
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 
+from django.contrib import messages
+
 
 @never_cache
 def register_view(request):
@@ -23,27 +25,32 @@ def register_view(request):
         email = request.POST.get('email', '').strip()
         password = request.POST.get('password', '')
 
+        context = {
+            'mode': 'register',
+            'title': 'Реєстрація',
+            'username_val': username,
+            'email_val': email
+        }
+
         if not username or not email or not password:
-            return render(request, 'users/login_register.html',
-                          {'mode': 'register', 'error': "Всі поля є обов'язковими!",
-                           'title': 'Реєстрація'})
+            messages.error(request, "Всі поля є обов'язковими!")
+            return render(request, 'users/login_register.html', context)
 
         if User.objects.filter(Q(username__iexact=username) | Q(email__iexact=email)).exists():
-            return render(request, 'users/login_register.html',
-                          {'mode': 'register', 'error': "Акаунт з таким email або імʼям вже існує!",
-                           'title': 'Реєстрація'})
-        if len(password) < 8:
-            return render(request, 'users/login_register.html',
-                          {'mode': 'register', 'error': 'Пароль має бути не менше 8 символів.', 'title': 'Реєстрація'})
+            messages.error(request, "Акаунт з таким email або імʼям вже існує!")
+            return render(request, 'users/login_register.html', context)
 
-        user = User.objects.create_user(username=username, email=email, password=password)
+        if len(password) < 8:
+            messages.error(request, 'Пароль має бути не менше 8 символів.')
+            return render(request, 'users/login_register.html', context)
+
         user = User.objects.create_user(username=username, email=email, password=password)
         user.is_active = False
         user.save()
 
         current_site = get_current_site(request)
         mail_subject = 'Активація вашого акаунту'
-        message = render_to_string('users/acc_active_email.html', {  # Цей шаблон створимо на наступному кроці
+        message = render_to_string('users/acc_active_email.html', {
             'user': user,
             'domain': current_site.domain,
             'uid': urlsafe_base64_encode(force_bytes(user.pk)),
@@ -52,8 +59,9 @@ def register_view(request):
         email_message = EmailMessage(mail_subject, message, to=[email])
         email_message.send()
 
-        return render(request, 'users/login_register.html',
-                      {'mode': 'login', 'error': 'Акаунт створено! Перевірте пошту для активації.', 'title': 'Вхід'})
+
+        messages.success(request, 'Акаунт створено! Перевірте пошту для активації.')
+        return render(request, 'users/login_register.html', {'mode': 'login', 'title': 'Вхід'})
 
     return render(request, 'users/login_register.html', {'mode': 'register', 'title': 'Реєстрація'})
 
@@ -117,7 +125,6 @@ def activate_view(request, uidb64, token):
     else:
         return render(request, 'users/login_register.html',
                       {'mode': 'login', 'error': 'Посилання для активації недійсне або застаріле.', 'title': 'Вхід'})
-
 
 
 @login_required

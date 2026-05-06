@@ -1,10 +1,3 @@
-/* ══════════════════════════════════════════════
-   MAIN.JS — Sidebar, Calendar, Settings dropdown
-   ══════════════════════════════════════════════ */
-
-
-/* ══ МІНІ-КАЛЕНДАР ══ */
-
 const MONTHS_UA = ['Січень', 'Лютий', 'Березень', 'Квітень', 'Травень', 'Червень',
     'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень'];
 const DAYS_UA = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'];
@@ -20,7 +13,6 @@ function buildCal() {
 
     title.textContent = MONTHS_UA[calMonth] + ' ' + calYear;
 
-    /* Заголовки днів тижня */
     DAYS_UA.forEach(d => {
         const el = document.createElement('div');
         el.className = 'cal-dn';
@@ -29,14 +21,13 @@ function buildCal() {
     });
 
     const today = new Date();
-    const isThisM = (today.getFullYear() === calYear && today.getMonth() === calMonth);
+    const isThisM = today.getFullYear() === calYear && today.getMonth() === calMonth;
     const todayD = today.getDate();
     const firstDay = new Date(calYear, calMonth, 1).getDay();
-    const off = firstDay === 0 ? 6 : firstDay - 1;   /* зсув до Пн */
+    const off = firstDay === 0 ? 6 : firstDay - 1;
     const prevTotal = new Date(calYear, calMonth, 0).getDate();
     const total = new Date(calYear, calMonth + 1, 0).getDate();
 
-    /* Дні з попереднього місяця */
     for (let i = 0; i < off; i++) {
         const el = document.createElement('div');
         el.className = 'cal-d other';
@@ -44,15 +35,21 @@ function buildCal() {
         grid.appendChild(el);
     }
 
-    /* Дні поточного місяця */
     for (let d = 1; d <= total; d++) {
         const el = document.createElement('div');
         el.className = (isThisM && d === todayD) ? 'cal-d today' : 'cal-d';
         el.textContent = d;
+        el.style.cursor = 'pointer';
+
+        el.addEventListener('click', () => {
+            const clicked = new Date(calYear, calMonth, d);
+            clicked.setHours(0, 0, 0, 0);
+            document.dispatchEvent(new CustomEvent('calDateSelected', {detail: {date: clicked}}));
+        });
+
         grid.appendChild(el);
     }
 
-    /* Дні наступного місяця (до 42 комірок) */
     const rest = 42 - off - total;
     for (let i = 1; i <= rest; i++) {
         const el = document.createElement('div');
@@ -80,9 +77,6 @@ document.getElementById('calNext').addEventListener('click', () => {
     buildCal();
 });
 
-
-/* ══ SIDEBAR — DESKTOP COLLAPSE ══ */
-
 const sbToggleBtn = document.getElementById('sbToggleBtn');
 const COLLAPSED_KEY = 'flw_sb_col';
 
@@ -90,7 +84,6 @@ function isMobile() {
     return window.innerWidth < 768;
 }
 
-/* Відновлюємо стан тільки на desktop */
 if (!isMobile() && localStorage.getItem(COLLAPSED_KEY) === '1') {
     document.body.classList.add('sb-col');
 }
@@ -101,7 +94,6 @@ sbToggleBtn.addEventListener('click', () => {
     localStorage.setItem(COLLAPSED_KEY, isCol ? '1' : '0');
 });
 
-/* При зміні розміру вікна синхронізуємо стан */
 window.addEventListener('resize', () => {
     if (!isMobile()) {
         document.body.classList.toggle('sb-col', localStorage.getItem(COLLAPSED_KEY) === '1');
@@ -109,9 +101,6 @@ window.addEventListener('resize', () => {
         document.body.classList.remove('sb-col');
     }
 });
-
-
-/* ══ SIDEBAR — МОБІЛЬНЕ МЕНЮ ══ */
 
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('overlay');
@@ -132,9 +121,6 @@ burgerBtn.addEventListener('click', () =>
 );
 overlay.addEventListener('click', closeSidebar);
 
-
-/* ══ SETTINGS DROPDOWN ══ */
-
 const setBtn = document.getElementById('setBtn');
 const setMenu = document.getElementById('setMenu');
 
@@ -153,9 +139,8 @@ Sortable.create(sbScroll, {
     animation: 150,
     draggable: '.sb-cat',
     ghostClass: 'sb-cat--ghost',
-    filter: '[data-default="true"]',         // заборонити тягати дефолтну
+    filter: '[data-default="true"]',
     onMove(evt) {
-        // заборонити ставити інші категорії ПЕРЕД дефолтною
         if (evt.related.dataset.default === 'true') return false;
     },
     onEnd() {
@@ -171,4 +156,72 @@ Sortable.create(sbScroll, {
             body: JSON.stringify({order}),
         });
     }
+});
+
+// --- 1. ВІДКРИТТЯ МОДАЛКИ ТА ПІДСТАНОВКА ДАНИХ ---
+document.addEventListener('click', e => {
+    const btn = e.target.closest('.sb-cat__more');
+    if (!btn) return;
+    e.stopPropagation();
+
+    const id = btn.dataset.catId;
+    const name = btn.dataset.catName;
+    const color = btn.dataset.catColor;
+
+    // Заповнюємо базові поля
+    document.getElementById('editCategoryName').value = name;
+    document.getElementById('editSelectedColor').value = color;
+    document.getElementById('editPreviewName').textContent = name;
+    document.getElementById('editPreviewDot').style.backgroundColor = color;
+    document.getElementById('editCategoryForm').action = btn.dataset.catUrl;
+    document.getElementById('deleteCategoryForm').action = `/boards/delete_category/${id}/`;
+
+    // Видаляємо всі "тимчасові" кольори з попередніх відкриттів (щоб не дублювалися)
+    document.querySelectorAll('#editCategoryModal .temp-color').forEach(el => el.remove());
+
+    const colorPicker = document.querySelector('#editCategoryModal .color-picker');
+    let existingDot = colorPicker.querySelector(`[data-color="${color}"]`);
+
+    // Якщо поточного кольору категорії немає у списку "вільних", додаємо його візуально
+    if (!existingDot) {
+        existingDot = document.createElement('button');
+        existingDot.type = 'button';
+        existingDot.className = 'color-dot temp-color'; // temp-color дозволить видалити його потім
+        existingDot.dataset.color = color;
+        existingDot.style.backgroundColor = color;
+        colorPicker.prepend(existingDot);
+    }
+
+    // Прибираємо виділення з усіх і виділяємо поточний
+    document.querySelectorAll('#editCategoryModal .color-dot').forEach(dot => {
+        dot.classList.remove('active');
+    });
+    existingDot.classList.add('active');
+
+    // Кнопка видалення
+    document.getElementById('deleteCatBtn').onclick = (event) => {
+        if (!confirm(`Видалити категорію «${name}»?`)) {
+            event.preventDefault();
+        }
+    };
+
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('editCategoryModal')).show();
+});
+
+// --- 2. ПЕРЕКЛЮЧЕННЯ КОЛЬОРІВ В МОДАЛЦІ (Замість onclick в HTML) ---
+document.addEventListener('click', e => {
+    // Шукаємо, чи клікнули саме по крапці кольору в модалці редагування
+    const dot = e.target.closest('#editCategoryModal .color-dot');
+    if (!dot) return;
+
+    // Прибираємо клас 'active' у всіх інших крапок
+    document.querySelectorAll('#editCategoryModal .color-dot').forEach(d => d.classList.remove('active'));
+
+    // Додаємо клас тій, по якій клікнули
+    dot.classList.add('active');
+
+    // Оновлюємо прихований input та крапку прев'ю
+    const color = dot.dataset.color;
+    document.getElementById('editSelectedColor').value = color;
+    document.getElementById('editPreviewDot').style.backgroundColor = color;
 });

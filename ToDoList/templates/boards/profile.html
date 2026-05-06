@@ -3,21 +3,28 @@
 
 {% block page_css %}
 <link href="{% static 'boards/css/pages/profile.css' %}" rel="stylesheet">
+
 {% endblock %}
 
 {% block content %}
-<main class="main">
-    <div class="page-title">Профіль</div>
+<main class="px-3 px-md-4 py-4 py-lg-5" style="max-width: 800px; margin: 0 auto;">
+
+    <h1 class="fw-bold text-white mb-4" style="font-size: 1.3rem;">Профіль</h1>
+
     {% if messages %}
-    <div class="contact-messages mb-3">
+    <div class="mb-3">
         {% for message in messages %}
-        <div class="contact-alert contact-alert-{{ message.tags }}">
+        <div class="d-flex align-items-start gap-2 rounded-3 px-3 py-2 mb-2
+            {% if message.tags == 'success' %}text-success{% else %}text-danger{% endif %}"
+             style="{% if message.tags == 'success' %}background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);{% else %}background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);{% endif %}font-size:.875rem;">
             {% if message.tags == 'success' %}
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="flex-shrink-0 mt-1" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
+                 viewBox="0 0 24 24">
                 <polyline points="20 6 9 17 4 12"/>
             </svg>
             {% else %}
-            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="flex-shrink-0 mt-1" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
+                 viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="10"/>
                 <line x1="12" y1="8" x2="12" y2="12"/>
                 <line x1="12" y1="16" x2="12.01" y2="16"/>
@@ -29,114 +36,136 @@
     </div>
     {% endif %}
 
+    <div class="flo-card mb-3 mb-md-4">
+        <div class="flo-section-title">Особиста інформація</div>
 
-    <div class="profile-card">
-        <div class="section-title">Особиста інформація</div>
-
-        <div class="avatar-block">
-
+        <div class="d-flex flex-column flex-sm-row align-items-center align-items-sm-start gap-3 mb-4 pb-4"
+             style="border-bottom: 1px solid #2a2a32;">
             <form method="POST" enctype="multipart/form-data" id="avatarForm">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="update_avatar">
-                <div class="avatar-wrap" onclick="document.getElementById('avatarInput').click()">
+                <div class="flo-avatar-wrap" onclick="document.getElementById('avatarInput').click()"
+                     style="width: 68px; height: 68px;">
                     {% if user.profile.avatar %}
-                    <img src="{{ user.profile.avatar.url }}" class="avatar-circle"/>
+                    <img src="{{ user.profile.avatar.url }}" style="width:100%;height:100%;object-fit:cover;"/>
                     {% else %}
-                    <div class="avatar-circle" id="avatarCircle">{{ user.username|first|upper }}</div>
+                    <div class="d-flex align-items-center justify-content-center w-100 h-100 fw-bold text-white"
+                         style="background:#27272a;font-size:1.4rem;">
+                        {{ user.username|first|upper }}
+                    </div>
                     {% endif %}
-                    <div class="avatar-overlay">...</div>
+                    <div class="flo-avatar-overlay">
+                        <svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                            <circle cx="12" cy="13" r="4"/>
+                        </svg>
+                    </div>
                     <input type="file" id="avatarInput" name="avatar" accept="image/*"
-                           style="display:none" onchange="previewAvatar(this)"/>
+                           class="d-none" onchange="previewAvatar(this)"/>
                 </div>
             </form>
 
-            <div class="avatar-meta">
-                <div class="avatar-name" id="displayName">{{ user.username }}</div>
-                <button type="button" class="btn-upload"
-                        onclick="document.getElementById('avatarInput').click()">Змінити фото
+            <div class="text-center text-sm-start">
+                <div class="fw-semibold text-white mb-2" style="font-size:1rem;">{{ user.username }}</div>
+                <button type="button" class="flo-btn-ghost"
+                        style="padding: 7px 16px; font-size: .83rem;"
+                        onclick="document.getElementById('avatarInput').click()">
+                    Змінити фото
                 </button>
             </div>
-
         </div>
 
-        <form class="field-grid" method="POST">
+        <form method="POST">
             {% csrf_token %}
             <input type="hidden" name="action" value="update_info">
-            <div class="field-group">
-                <label class="field-label">Ім'я</label>
-                <input id="firstName" name="first_name" class="field-input" type="text" value="{{ user.first_name }}"
-                       placeholder="Ім'я"/>
-            </div>
-            <div class="field-group">
-                <label class="field-label">Прізвище</label>
-                <input id="lastName" name="last_name" class="field-input" type="text" value="{{ user.last_name }}"
-                       placeholder="Прізвище"/>
-            </div>
-            <div class="field-group full">
-                <label class="field-label">Електронна пошта</label>
-                <input class="field-input" name="email" value="{{ user.email }}" placeholder="email@example.com"
-                       disabled/>
-            </div>
-            <div class="field-group full">
-                <label class="field-label">Дата реєстрації</label>
-                <input class="field-input" type="text" value="{{ user.date_joined }}" disabled/>
-            </div>
-            <div class="action-row">
-                <button type="reset" class="btn-ghost">Скинути</button>
-                <button type="submit" class="btn-save">Зберегти</button>
+            <div class="row g-3">
+                <div class="col-12 col-sm-6">
+                    <label class="flo-label">Ім'я</label>
+                    <input name="first_name" type="text" value="{{ user.first_name }}"
+                           placeholder="Ім'я" class="flo-input form-control">
+                </div>
+                <div class="col-12 col-sm-6">
+                    <label class="flo-label">Прізвище</label>
+                    <input name="last_name" type="text" value="{{ user.last_name }}"
+                           placeholder="Прізвище" class="flo-input form-control">
+                </div>
+                <div class="col-12 col-sm-6">
+                    <label class="flo-label">Електронна пошта</label>
+                    <input name="email" value="{{ user.email }}" disabled class="flo-input form-control">
+                </div>
+                <div class="col-12 col-sm-6">
+                    <label class="flo-label">Дата реєстрації</label>
+                    <input type="text" value="{{ user.date_joined }}" disabled class="flo-input form-control">
+                </div>
+                <div class="col-12 d-flex flex-column flex-sm-row justify-content-sm-end gap-2 pt-1">
+                    <button type="reset" class="flo-btn-ghost">Скинути</button>
+                    <button type="submit" class="flo-btn-save">Зберегти</button>
+                </div>
             </div>
         </form>
-
     </div>
 
-    <form class="profile-card" method="POST">
-        <div class="section-title">Зміна пароля</div>
-        <input type="hidden" name="action" value="change_password">
+    <form method="POST" class="flo-card">
         {% csrf_token %}
-        <div class="field-grid">
-            <div class="field-group full">
-                <label class="field-label">Поточний пароль</label>
-                <input class="field-input" name="user_password" type="password" placeholder="••••••••"/>
+        <input type="hidden" name="action" value="change_password">
+
+        <div class="flo-section-title">Зміна пароля</div>
+
+        <div class="row g-3">
+            <div class="col-12">
+                <label class="flo-label">Поточний пароль</label>
+                <input name="user_password" type="password" placeholder="••••••••" class="flo-input form-control">
             </div>
-            <div class="field-group">
-                <label class="field-label">Новий пароль</label>
-                <input class="field-input" name="new_password1" type="password" id="newPass" placeholder="••••••••"
-                       oninput="checkStrength(this.value); checkMatch()"/>
-                <div class="strength-bar">
-                    <div class="strength-seg" id="s1"></div>
-                    <div class="strength-seg" id="s2"></div>
-                    <div class="strength-seg" id="s3"></div>
-                    <div class="strength-seg" id="s4"></div>
+            <div class="col-12 col-sm-6">
+                <label class="flo-label">Новий пароль</label>
+                <input name="new_password1" type="password" id="newPass" placeholder="••••••••"
+                       class="flo-input form-control"
+                       oninput="checkStrength(this.value); checkMatch()">
+                <div class="d-flex gap-1 mt-2">
+                    <div id="s1" class="flex-fill rounded-pill"
+                         style="height:3px;background:#27272a;transition:background .3s;"></div>
+                    <div id="s2" class="flex-fill rounded-pill"
+                         style="height:3px;background:#27272a;transition:background .3s;"></div>
+                    <div id="s3" class="flex-fill rounded-pill"
+                         style="height:3px;background:#27272a;transition:background .3s;"></div>
+                    <div id="s4" class="flex-fill rounded-pill"
+                         style="height:3px;background:#27272a;transition:background .3s;"></div>
                 </div>
-                <div class="strength-label" id="strengthLabel"></div>
+                <small id="strengthLabel" class="d-block mt-1" style="color:#71717a;font-size:.78rem;"></small>
             </div>
-            <div class="field-group">
-                <label class="field-label">Підтвердити пароль</label>
-                <input class="field-input" name="new_password2" type="password" id="confirmPass" placeholder="••••••••"
-                       oninput="checkMatch()"/>
-                <div class="strength-label" id="matchLabel"></div>
+            <div class="col-12 col-sm-6">
+                <label class="flo-label">Підтвердити пароль</label>
+                <input name="new_password2" type="password" id="confirmPass" placeholder="••••••••"
+                       class="flo-input form-control" oninput="checkMatch()">
+                <small id="matchLabel" class="d-block mt-1" style="font-size:.78rem;"></small>
             </div>
         </div>
 
-        <div class="action-row">
-            <form method="POST" style="margin: 0;">
+        <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between gap-3 mt-4 pt-2"
+             style="border-top: 1px solid #2a2a32;">
+            <form method="POST" class="m-0">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="send_reset_link">
-                <button type="submit" class="btn-ghost">Забули пароль?</button>
+                <button type="submit" class="btn btn-link p-0"
+                        style="color:#52525b;text-decoration:none;font-size:.85rem;">
+                    Забули пароль?
+                </button>
             </form>
-            <button type="reset" class="btn-ghost"
-                    onclick="setTimeout(() => { checkStrength(''); checkMatch(); }, 50)">
-                Скинути
-            </button>
-            <button class="btn-save" type="submit">Оновити пароль</button>
+            <div class="d-flex flex-column flex-sm-row gap-2">
+                <button type="reset" class="flo-btn-ghost"
+                        onclick="setTimeout(() => { checkStrength(''); checkMatch(); }, 50)">
+                    Скинути
+                </button>
+                <button type="submit" class="flo-btn-save">Оновити пароль</button>
+            </div>
         </div>
     </form>
+
 </main>
 
-<div class="toast-wrap">
-    <div class="toast-msg" id="toastMsg"></div>
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index:9999;">
+    <div id="toastMsg"></div>
 </div>
-
 
 {% block page_js %}
 <script src="{% static 'boards/js/pages/profile.js' %}"></script>
