@@ -4,56 +4,312 @@
 {% block page_css %}
 <link href="{% static 'boards/css/pages/board.css' %}" rel="stylesheet">
 <style>
-    .day-add-btn {
-        display: none !important;
+    /* ── ІНТУЇТИВНІ ФІЛЬТРИ ── */
+    .archive-filters {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 20px;
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        background: rgba(255, 255, 255, 0.01);
     }
 
-    .day-empty {
-        display: none !important;
+    .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.02);
+        padding: 4px 12px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .day-tasks {
-        pointer-events: none;
+    .filter-label {
+        font-size: 0.8rem;
+        color: #71717a;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
-    .task-card {
-        pointer-events: auto;
+    .archive-filters .flo-input {
+        height: 32px;
+        padding: 0 10px;
+        font-size: 0.85rem;
+        background: transparent;
+        border: none;
+        color: #e4e4e7;
+        outline: none;
+        cursor: pointer;
     }
 
-    .board-header {
-        border-bottom: 2px solid var(--danger);
+    .archive-filters .flo-input:focus {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 6px;
+    }
+
+    .filter-sep {
+        color: #52525b;
+    }
+
+    .archive-filters select option {
+        background: #18181b;
+    }
+
+    .btn-ghost {
+        height: 38px;
+        padding: 0 16px;
+        font-size: 0.85rem;
+        color: #a1a1aa;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-ghost:hover {
+        color: #f4f4f5;
+        border-color: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .archive-counter {
+        font-size: 0.8rem;
+        color: #71717a;
+        margin-left: auto;
+        font-weight: 500;
+        background: rgba(255, 255, 255, 0.04);
+        padding: 6px 12px;
+        border-radius: 8px;
+    }
+
+    /* ── ДИЗАЙН КАРТОК ── */
+    .archive-list-wrap {
+        padding: 24px;
+        margin: 0; /* Прибрали auto, тепер блок притиснуто ліворуч */
+        width: 100%;
+    }
+
+    .archive-row {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        max-width: 1000px; /* Картка не буде нескінченно довгою на великих екранах */
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        border-radius: 12px;
+        margin-bottom: 10px;
+        padding: 16px 20px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+        opacity: 0; /* Робимо картку невидимою на старті */
+        animation: fadeInUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    .archive-group-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 32px 0 12px;
+    }
+
+    .archive-group-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: #a1a1aa;
+        font-weight: 600;
+    }
+
+    .archive-group-count {
+        font-size: 0.75rem;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 2px 10px;
+        color: #d4d4d8;
+        font-weight: 500;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .archive-row:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .archive-row-color-bar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: var(--task-color, #8a8a96);
+    }
+
+    .archive-row-body {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        gap: 16px;
+        padding-left: 8px;
+    }
+
+    .archive-row-main {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .archive-row-title {
+        font-size: 1.05rem;
+        font-weight: 500;
+        color: #f4f4f5;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-decoration: line-through;
+        text-decoration-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .archive-row-info {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-size: 0.85rem;
+        color: #71717a;
+    }
+
+    .archive-row-cat {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .archive-cat-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        flex-shrink: 0;
+    }
+
+    .archive-row-time {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .archive-row-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-shrink: 0;
+    }
+
+    .task-priority {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .task-priority.high {
+        background: rgba(239, 68, 68, 0.15);
+        color: #f87171;
+    }
+
+    .task-priority.med {
+        background: rgba(245, 158, 11, 0.15);
+        color: #fbbf24;
+    }
+
+    .task-priority.low {
+        background: rgba(59, 130, 246, 0.15);
+        color: #60a5fa;
+    }
+
+    .archive-row-chevron {
+        color: #3f3f46;
+        font-size: 1.2rem;
+        transition: color 0.2s;
+    }
+
+    .archive-row:hover .archive-row-chevron {
+        color: #a1a1aa;
+    }
+
+    .archive-empty {
+        text-align: center;
+        padding: 80px 0;
+        color: #3f3f46;
+        font-size: 0.9rem;
+    }
+
+    .archive-empty svg {
+        display: block;
+        margin: 0 auto 16px;
+        opacity: 0.3;
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="board-wrap">
-    <div class="board-header">
-        <div class="week-nav">
-            <button class="week-btn" id="weekPrev" aria-label="Попередній тиждень">
-                <svg viewBox="0 0 16 16" fill="none">
-                    <path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                          stroke-linejoin="round"/>
-                </svg>
-            </button>
-            <span class="week-label" id="weekLabel"></span>
-            <button class="week-btn" id="weekNext" aria-label="Наступний тиждень">
-                <svg viewBox="0 0 16 16" fill="none">
-                    <path d="M6 12l4-4-4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
-                          stroke-linejoin="round"/>
-                </svg>
-            </button>
-        </div>
-        <button class="week-today-btn" id="weekToday">Поточний тиждень</button>
+{{ tasks_json|json_script:"tasks-data" }}
+
+<div class="archive-filters">
+
+    <div class="filter-group">
+        <span class="filter-label">Період</span>
+        <input type="date" id="filterDateFrom" class="flo-input" title="Початкова дата">
+        <span class="filter-sep">—</span>
+        <input type="date" id="filterDateTo" class="flo-input" title="Кінцева дата">
     </div>
-    <div class="board-grid" id="boardGrid"></div>
+
+    <div class="filter-group">
+        <span class="filter-label">Пріоритет</span>
+        <select id="filterPriority" class="flo-input">
+            <option value="">Всі</option>
+            <option value="high">Високий</option>
+            <option value="med">Середній</option>
+            <option value="low">Низький</option>
+        </select>
+    </div>
+
+    <button id="filterReset" class="btn-ghost">Скинути</button>
+    <span id="archiveCounter" class="archive-counter"></span>
+</div>
+
+<div class="archive-list-wrap">
+    <div id="archiveList"></div>
+    <div id="archiveEmpty" style="display:none;" class="archive-empty">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+            <rect x="9" y="3" width="6" height="4" rx="1"/>
+        </svg>
+        В архіві немає завдань за цими параметрами
+    </div>
 </div>
 
 {% include 'components/boards/archive_task_modal.html' %}
-{% endblock %}
-
-
-{% block page_js %}
-{{ tasks_json|json_script:"tasks-data" }}
 <script src="{% static 'boards/js/pages/archive.js' %}"></script>
 {% endblock %}

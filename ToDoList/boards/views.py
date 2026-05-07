@@ -30,10 +30,9 @@ def main(request):
     available_colors = get_available_colors(request.user)
     form_categories = categories.filter(is_default=False)
 
-    # 1. Беремо лише АКТИВНІ завдання для списку на головній
+
     tasks = request.user.tasks.filter(is_archived=False).order_by('-priority')
 
-    # --- Визначаємо межі поточного тижня ---
     today = timezone.localdate()
     start_of_week = today - timedelta(days=today.weekday())
     end_of_week = start_of_week + timedelta(days=6)

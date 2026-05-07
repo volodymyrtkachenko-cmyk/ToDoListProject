@@ -55,7 +55,6 @@ class Task(models.Model):
     title = models.CharField(max_length=255, verbose_name='назва')
     description = models.TextField(blank=True, verbose_name='опис')
     priority = models.IntegerField(choices=Priority.choices, default=Priority.MEDIUM)
-    order = models.PositiveIntegerField(default=0)
     is_archived = models.BooleanField(default=False)
     due_date = models.DateField(null=True, blank=True, verbose_name='дедлайн')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -72,7 +71,6 @@ class Task(models.Model):
     class Meta:
         verbose_name = 'завдання'
         verbose_name_plural = 'завдання'
-        ordering = ['order', '-created_at']
 
 
 @receiver(post_save, sender=User)

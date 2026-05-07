@@ -3,6 +3,7 @@
 }
 
 body {
+    /* 1. Додали ваш радіальний градієнт фону */
     background-color: #050505;
     background: radial-gradient(circle at center, #1b1b1f 0%, #050505 100%);
     background-attachment: fixed;
@@ -15,7 +16,7 @@ body {
     font-style: italic;
 }
 
-/* Анімація появи */
+/* Анімація появи картки */
 .fade-in {
     animation: fadeIn 0.4s ease-out;
 }
@@ -29,4 +30,29 @@ body {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* === ФІКС: ПІДСВІТКА ПО КРАЮ (GLOW) === */
+/* Ми створюємо спеціальний клас, який додамо в HTML */
+.auth-input-focus:focus {
+    /* Робимо рамку фіолетовою */
+    border-color: #8b5cf6 !important;
+    /* Створюємо ефект неонового світіння (box-shadow) */
+    box-shadow: 0 0 16px rgba(139, 92, 246, 0.4) !important;
+    /* Трохи змінюємо фон, щоб поле "випливало" */
+    background-color: #1a1a1e !important;
+    /* Прибираємо стандартне кільце Tailwind */
+    --tw-ring-opacity: 0 !important;
+    outline: none !important;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Хаки для автозаповнення в Chrome (щоб інпути не ставали білими) */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #131316 inset !important;
+    -webkit-text-fill-color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
