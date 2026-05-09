@@ -661,7 +661,7 @@ html, body {
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
-    overflow: hidden;
+    overflow: auto;
     transition: margin-left .25s cubic-bezier(.4, 0, .2, 1);
 }
 
