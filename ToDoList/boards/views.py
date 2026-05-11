@@ -30,7 +30,6 @@ def main(request):
     available_colors = get_available_colors(request.user)
     form_categories = categories.filter(is_default=False)
 
-
     tasks = request.user.tasks.filter(is_archived=False).order_by('-priority')
 
     today = timezone.localdate()
@@ -38,6 +37,12 @@ def main(request):
     end_of_week = start_of_week + timedelta(days=6)
 
     weekly_done = request.user.tasks.filter(
+        is_archived=True,
+        done_at__date__gte=start_of_week,
+        done_at__date__lte=end_of_week
+    ).count()
+
+    weekly_done_in_range = request.user.tasks.filter(
         is_archived=True,
         due_date__gte=start_of_week,
         due_date__lte=end_of_week
@@ -65,11 +70,10 @@ def main(request):
             'category_name': t.category.name,
             'category_id': t.category.id,
             'category_color': t.category.color,
-            'is_done': t.done_at is not None,
             'is_overdue': t.is_overdue,
         })
 
-    weekly_total = weekly_active
+    weekly_total = weekly_active + weekly_done_in_range
 
     context = {
         'title': 'Головна',
@@ -77,6 +81,7 @@ def main(request):
         'available_colors': available_colors,
         'form_categories': form_categories,
         'tasks_json': tasks_list,
+        'weekly_active': weekly_active,
         'weekly_total': weekly_total,
         'weekly_done': weekly_done,
         'overdue_total': overdue_total,

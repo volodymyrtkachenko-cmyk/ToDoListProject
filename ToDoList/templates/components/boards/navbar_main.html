@@ -3,13 +3,11 @@
 
     <!-- desktop sidebar toggle -->
     <button class="tb-sb-toggle" id="sbToggleBtn" aria-label="Згорнути сайдбар">
-        <!-- collapse icon (панель ліворуч → приховати) -->
         <svg class="icon-collapse" viewBox="0 0 16 16">
             <rect x="2" y="2" width="12" height="12" rx="1.5"/>
             <line x1="6" y1="2" x2="6" y2="14"/>
             <polyline points="3.5,6 1.5,8 3.5,10"/>
         </svg>
-        <!-- expand icon -->
         <svg class="icon-expand" viewBox="0 0 16 16">
             <rect x="2" y="2" width="12" height="12" rx="1.5"/>
             <line x1="6" y1="2" x2="6" y2="14"/>
@@ -30,11 +28,10 @@
         <span class="tb-logo__text">Flō</span>
         <span class="tb-logo__badge">w</span>
     </div>
+
     {% if request.resolver_match.url_name == 'main' %}
-    <!-- Панель тепер d-flex (завжди видима), а не d-none -->
     <div class="nav-stats-panel ms-auto d-flex">
 
-        <!-- Період -->
         <div class="stat-period" title="За 7 днів">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                  stroke-linecap="round" stroke-linejoin="round">
@@ -43,29 +40,25 @@
                 <line x1="8" y1="2" x2="8" y2="6"></line>
                 <line x1="3" y1="10" x2="21" y2="10"></line>
             </svg>
-            <!-- Текст ховається на мобільних -->
             <span class="d-none d-md-inline">За 7 днів</span>
         </div>
 
         <div class="stat-divider"></div>
 
-        <!-- Всього -->
-        <div class="stat-item todo" title="Всього">
+        <div class="stat-item todo" title="Залишилось зробити">
             <span class="stat-lbl d-none d-md-inline">зробити</span>
-            <span class="stat-val">{{ weekly_total }}</span>
+            <span class="stat-val">{{ weekly_active }}</span>
         </div>
 
         <div class="stat-divider"></div>
 
-        <!-- Виконано -->
         <div class="stat-item done" title="Виконано">
-            <span class="stat-lbl d-none d-md-inline">виконанно</span>
+            <span class="stat-lbl d-none d-md-inline">виконано</span>
             <span class="stat-val">{{ weekly_done }}</span>
         </div>
 
         <div class="stat-divider"></div>
 
-        <!-- Прострочено -->
         <div class="stat-item overdue" title="Прострочено">
             <span class="stat-lbl d-none d-md-inline">прострочено</span>
             <span class="stat-val">{{ overdue_total }}</span>
@@ -73,11 +66,11 @@
 
     </div>
 
-    <!-- Кнопка "Створити" -->
     <button class="btn-create" data-bs-toggle="modal" data-bs-target="#createModal">
         <span class="plus">+</span><span class="lbl">Створити</span>
     </button>
     {% endif %}
+
     {% if request.resolver_match.url_name != 'main' %}
     <a href="{% url 'profile' %}" class="btn-profile ms-auto">
         <svg class="profile-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -89,12 +82,11 @@
     </a>
     {% endif %}
 
-
 </header>
 
 <div class="toast-container position-fixed p-3" style="top: 56px; right: 0; z-index: 9999">
     {% for message in messages %}
-    <div class="toast align-items-center text-bg-{{ message.tags }} border-0 " role="alert">
+    <div class="toast align-items-center text-bg-{{ message.tags }} border-0" role="alert">
         <div class="d-flex">
             <div class="toast-body">{{ message }}</div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
@@ -102,19 +94,18 @@
     </div>
     {% endfor %}
 </div>
+
 <style>
-    /* --- ПАНЕЛЬ СТАТИСТИКИ (ІЗ ТЕКСТОМ ТА HOVER-ЕФЕКТАМИ) --- */
     .nav-stats-panel {
         display: flex;
         align-items: center;
-        background: rgba(255, 255, 255, 0.02); /* Дуже легкий фон панелі */
+        background: rgba(255, 255, 255, 0.02);
         border: 1px solid rgba(255, 255, 255, 0.06);
         border-radius: 8px;
         padding: 4px 6px;
         margin-right: 16px;
     }
 
-    /* Індикатор "За 7 днів" */
     .stat-period {
         display: flex;
         align-items: center;
@@ -128,7 +119,6 @@
         user-select: none;
     }
 
-    /* Розділові смужки */
     .stat-divider {
         width: 1px;
         height: 16px;
@@ -136,7 +126,6 @@
         margin: 0 4px;
     }
 
-    /* Спільний стиль для блоків статистики */
     .stat-item {
         display: flex;
         align-items: center;
@@ -144,10 +133,9 @@
         padding: 4px 10px;
         border-radius: 6px;
         cursor: default;
-        transition: all 0.2s ease; /* Плавний перехід для hover */
+        transition: all 0.2s ease;
     }
 
-    /* Текст підпису (всього, виконано...) */
     .stat-lbl {
         font-size: 0.8rem;
         font-weight: 500;
@@ -155,15 +143,11 @@
         transition: color 0.2s ease;
     }
 
-    /* Сама цифра */
     .stat-val {
         font-size: 0.95rem;
         font-weight: 700;
     }
 
-    /* --- Кольори та круті Hover-ефекти --- */
-
-    /* Всього (Сірий/Білий) */
     .stat-item.todo .stat-val {
         color: #f4f4f5;
     }
@@ -176,9 +160,6 @@
         color: #f4f4f5;
     }
 
-    /* Текст стає білішим */
-
-    /* Виконано (Зелений) */
     .stat-item.done .stat-val {
         color: #10b981;
     }
@@ -191,9 +172,6 @@
         color: #34d399;
     }
 
-    /* Текст "світиться" зеленим */
-
-    /* Прострочено (Червоний) */
     .stat-item.overdue .stat-val {
         color: #ef4444;
     }
@@ -206,36 +184,34 @@
         color: #f87171;
     }
 
-    /* --- Адаптація статистики для мобільних пристроїв --- */
     @media (max-width: 768px) {
         .nav-stats-panel {
             padding: 2px 4px;
-            margin-right: 8px; /* Робимо менший відступ від кнопки "Створити" */
+            margin-right: 8px;
         }
 
         .stat-item, .stat-period {
-            padding: 4px 6px; /* Менші відступи всередині плашок */
-            gap: 0; /* Прибираємо gap, бо тексту немає */
+            padding: 4px 6px;
+            gap: 0;
         }
 
         .stat-divider {
-            margin: 0 2px; /* Робимо лінії ближче до цифр */
+            margin: 0 2px;
         }
 
-        /* Робимо самі цифри трохи більшими на телефоні для зручності */
         .stat-val {
             font-size: 1.05rem;
         }
     }
 </style>
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.toast').forEach(el => {
-            const toast = bootstrap.Toast.getOrCreateInstance(el, {
+            bootstrap.Toast.getOrCreateInstance(el, {
                 delay: 3000,
                 autohide: true,
-            });
-            toast.show();
+            }).show();
         });
     });
 </script>
