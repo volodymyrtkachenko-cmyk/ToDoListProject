@@ -59,7 +59,6 @@ def register_view(request):
         email_message = EmailMessage(mail_subject, message, to=[email])
         email_message.send()
 
-
         messages.success(request, 'Акаунт створено! Перевірте пошту для активації.')
         return render(request, 'users/login_register.html', {'mode': 'login', 'title': 'Вхід'})
 
@@ -114,14 +113,14 @@ def activate_view(request, uidb64, token):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
 
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
         user.save()
-        return render(request, 'users/login_register.html',
-                      {'mode': 'login', 'success': 'Пошту підтверджено! Тепер ви можете увійти.', 'title': 'Вхід'})
+        login(request, user)
+        return redirect('main')
     else:
         return render(request, 'users/login_register.html',
                       {'mode': 'login', 'error': 'Посилання для активації недійсне або застаріле.', 'title': 'Вхід'})
